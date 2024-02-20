@@ -18,16 +18,17 @@ import java.util.List;
 public class ScrapeController {
 
     private ScrappingService service;
+    private ImdbUtility utility;
 
     @Autowired
-    public ScrapeController(ScrappingService service) {
+    public ScrapeController(ScrappingService service, ImdbUtility utility) {
         this.service = service;
+        this.utility = utility;
     }
 
     @GetMapping("/scrape/{movieIdentifier}")
     public ScrapedDataDTO scrapeByMovieIdentifier(@PathVariable String movieIdentifier) {
-        ImdbUtility util = new ImdbUtility();
-        var scrapedDTO = util.scrapeImdb(movieIdentifier);
+        var scrapedDTO = utility.scrapeImdb(movieIdentifier);
 
         return scrapedDTO;
     }

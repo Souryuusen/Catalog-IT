@@ -10,10 +10,6 @@ import org.springframework.context.annotation.Bean;
 public class CatalogitApplication {
 
 	public static void main(String[] args) {
-
-//		ImdbUtility util = new ImdbUtility();
-//		util.scrapeImdb("tt10436228");
-
 		SpringApplication.run(CatalogitApplication.class, args);
 	}
 

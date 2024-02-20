@@ -4,6 +4,7 @@ import com.soursoft.catalogit.dto.ScrapedDataDTO;
 import com.soursoft.catalogit.entity.Movie;
 import com.soursoft.catalogit.exception.ImdbParsingException;
 import com.soursoft.catalogit.exception.MovieIdentifierValidationException;
+import com.soursoft.catalogit.service.ScrappingService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class ImdbUtility {
@@ -31,6 +33,7 @@ public class ImdbUtility {
             throw new MovieIdentifierValidationException("Provided identifier \"" + movieIdentifier + "\" is not valid!");
         } else {
             ScrapedDataDTO data = new ScrapedDataDTO();
+            data.setMovieIdentifier(movieIdentifier);
             try {
                 Document moviePage = retrievePageBody("https://www.imdb.com/title/" + movieIdentifier);
                 var movieTitle = parseMovieTitle(moviePage);
@@ -52,6 +55,10 @@ public class ImdbUtility {
                 data.setKeywordsSet(keywords);
                 data.setCoverUrlsSet(covers);
                 data.setProductionDetailsMap(productionDetails);
+                data.setRuntime(data.getProductionDetailsMap().get("RUNTIME"));
+                data.setLanguage(data.getProductionDetailsMap().get("LANGUAGE"));
+                data.setCountry(data.getProductionDetailsMap().get("COUNTRY"));
+                data.setReleaseDate(data.getProductionDetailsMap().get("RELEASE_DATE"));
 
                 return data;
             } catch (IOException e) {
@@ -202,45 +209,40 @@ public class ImdbUtility {
         return result;
     }
 
-    private Map<String, TreeSet<String>> parseTitleDetails(Document doc) {
-        Map<String, TreeSet<String>> detailsTreeSet = new HashMap<>();
+    private Map<String, String> parseTitleDetails(Document doc) {
+        Map<String, String> detailsMap = new HashMap<>();
         // Runtime Details Parsing
         Elements titleTechSpecsSection = doc.select("div[data-testid=\"title-techspecs-section\"]");
         Element durationElement = titleTechSpecsSection
                 .select("li[data-testid=\"title-techspec_runtime\"] span + div").first();
-        var durationTree = new TreeSet<String>();
-        durationTree.add(durationElement.text());
-        detailsTreeSet.put("Runtime", durationTree);
+        detailsMap.put("RUNTIME", durationElement.text());
+
         // Production Details Parsing
         Elements titleDetailsSection = doc.select("div[data-testid=\"title-details-section\"]");
         titleDetailsSection = titleDetailsSection.select("ul li div");
+
         // Release Date
         Element releaseDateElement = titleDetailsSection.select("a[href*=\"tt_dt_rdat\"]").first();
-        var releaseTree = new TreeSet<String>();
-        releaseTree.add(releaseDateElement.text());
-        detailsTreeSet.put("Release Date", releaseTree);
+        detailsMap.put("RELEASE_DATE", releaseDateElement.text());
+
         // Country Of Origin
         Elements countryElement = titleDetailsSection.select("a[href*=\"tt_dt_cn\"]");
-        var countryTree = new TreeSet<String>();
-        countryElement.stream().distinct()
-                .map(el -> el.text())
-                .forEach(country -> {
-                    logger.debug("Parsed Country Of Origin: " + country);
-                    countryTree.add(StringUtils.formatToCamelCase(country));
-                });
-        detailsTreeSet.put("Countries Of Origin", countryTree);
+        var countries = countryElement.stream()
+                .distinct()
+                .map(el -> StringUtils.formatToCamelCase(el.text()))
+                .peek(e -> logger.debug("Parsed Country Of Origin: " + e))
+                .collect(Collectors.joining(", "));
+        detailsMap.put("COUNTRY", countries);
+
         // Language
         Elements languageElement = titleDetailsSection.select("a[href*=\"tt_dt_ln\"]");
-        var languageTree = new TreeSet<String>();
-        languageElement.stream().distinct()
-                .map(el -> el.text())
-                .forEach(language -> {
-                    logger.debug("Parsed Language: " + language);
-                    languageTree.add(StringUtils.formatToCamelCase(language));
-                });
-        detailsTreeSet.put("Languages", languageTree);
+        var languages = languageElement.stream()
+                .distinct()
+                .map(el -> StringUtils.formatToCamelCase(el.text()))
+                .peek(e -> logger.debug("Parsed Language: " + e))
+                .collect(Collectors.joining(", "));
+        detailsMap.put("LANGUAGE", languages);
 
-
-        return detailsTreeSet;
+        return detailsMap;
     }
 }
