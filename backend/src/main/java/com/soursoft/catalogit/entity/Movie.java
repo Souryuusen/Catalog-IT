@@ -1,5 +1,6 @@
 package com.soursoft.catalogit.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.soursoft.catalogit.dto.ScrapedDataDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "movies")
@@ -53,8 +55,14 @@ public class Movie {
     @Column(name = "movie_identifier", nullable = false, unique = true)
     private String movieIdentifier;
 
-    @ElementCollection
-    private Set<String> directors;
+    @ManyToMany
+    @JsonManagedReference
+    @JoinTable(
+            name = "movie_directors",
+            joinColumns = @JoinColumn( name = "movie_id"),
+            inverseJoinColumns = @JoinColumn( name = "director_id")
+    )
+    private Set<Director> directors;
 
     @ElementCollection
     private Set<String> writers;
@@ -87,7 +95,7 @@ public class Movie {
     }
 
     public Movie(String title, String originalTitle, String runtime,
-                    String countryOfOrigin, String language, Set<String> directors,
+                    String countryOfOrigin, String language, Set<Director> directors,
                         Set<String> writers, Set<String> genres, Set<String> keywords,
                             Set<String> stars, Set<String> covers, String movieIdentifier) {
         this.title = title;
@@ -116,7 +124,9 @@ public class Movie {
         this.runtime = scrapedData.getRuntime();
         this.language = scrapedData.getLanguage();
         this.countryOfOrigin = scrapedData.getCountry();
-        this.directors = scrapedData.getDirectorsSet();
+        this.directors = scrapedData.getDirectorsSet().stream()
+                .map(s -> new Director(s))
+                .collect(Collectors.toSet());
         this.writers = scrapedData.getWritersSet();
         this.genres = scrapedData.getGenresSet();
         this.keywords = scrapedData.getKeywordsSet();
@@ -168,11 +178,11 @@ public class Movie {
         this.language = language;
     }
 
-    public Set<String> getDirectors() {
+    public Set<Director> getDirectors() {
         return directors;
     }
 
-    public void setDirectors(Set<String> directors) {
+    public void setDirectors(Set<Director> directors) {
         this.directors = directors;
     }
 
@@ -234,7 +244,22 @@ public class Movie {
 
     @Override
     public String toString() {
-        return super.toString();
+        return "Movie{" +
+                "movieId=" + movieId +
+                ", title='" + title + '\'' +
+                ", originalTitle='" + originalTitle + '\'' +
+                ", runtime='" + runtime + '\'' +
+                ", countryOfOrigin='" + countryOfOrigin + '\'' +
+                ", language='" + language + '\'' +
+                ", releaseDate='" + releaseDate + '\'' +
+                ", movieIdentifier='" + movieIdentifier + '\'' +
+                ", directors=" + directors +
+                ", writers=" + writers +
+                ", genres=" + genres +
+                ", keywords=" + keywords +
+                ", stars=" + stars +
+                ", covers=" + covers +
+                '}';
     }
 
     @Override
@@ -293,7 +318,7 @@ public class Movie {
             return this;
         }
 
-        public MovieBuilder withDirectors(Set<String> directors) {
+        public MovieBuilder withDirectors(Set<Director> directors) {
             getBuildedMovie().setDirectors(directors);
             return this;
         }

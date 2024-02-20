@@ -1,5 +1,6 @@
 package com.soursoft.catalogit.service;
 
+import com.soursoft.catalogit.entity.Director;
 import com.soursoft.catalogit.entity.Movie;
 import com.soursoft.catalogit.exception.MovieNotFoundException;
 import com.soursoft.catalogit.repository.MovieRepository;
@@ -7,15 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class MovieService {
 
     private MovieRepository repository;
 
+    private DirectorService directorService;
+
     @Autowired
-    public MovieService(MovieRepository repository) {
+    public MovieService(MovieRepository repository, DirectorService directorService) {
         this.repository = repository;
+        this.directorService = directorService;
     }
 
     public boolean verifyMovieExistsByIdentifier(String movieIdentifier) {
@@ -39,6 +44,16 @@ public class MovieService {
     }
 
     public Movie save(Movie movie) {
+        Set<Director> directorSet = movie.getDirectors();
+        for(Director director : directorSet) {
+            var fetchedDirector = directorService.findDirectorByNameIgnoreCase(director.getName());
+            if(fetchedDirector.isEmpty()) {
+                directorService.save(director);
+            } else {
+                directorSet.remove(director);
+                directorSet.add(fetchedDirector.get());
+            }
+        }
         return this.repository.save(movie);
     }
 
