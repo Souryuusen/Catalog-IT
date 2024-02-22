@@ -1,16 +1,16 @@
 package com.soursoft.catalogit.service;
 
-import com.soursoft.catalogit.entity.Director;
-import com.soursoft.catalogit.entity.Genre;
-import com.soursoft.catalogit.entity.Movie;
-import com.soursoft.catalogit.entity.Writer;
+import com.soursoft.catalogit.dto.ScrapedDataDTO;
+import com.soursoft.catalogit.entity.*;
 import com.soursoft.catalogit.exception.MovieNotFoundException;
 import com.soursoft.catalogit.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class MovieService {
@@ -20,14 +20,17 @@ public class MovieService {
     private DirectorService directorService;
     private WriterService writerService;
     private GenreService genreService;
+    private KeywordService keywordService;
 
     @Autowired
     public MovieService(MovieRepository repository, DirectorService directorService,
-                            WriterService writerService, GenreService genreService) {
+                            WriterService writerService, GenreService genreService,
+                                KeywordService keywordService) {
         this.repository = repository;
         this.directorService = directorService;
         this.writerService = writerService;
         this.genreService = genreService;
+        this.keywordService = keywordService;
     }
 
     public boolean verifyMovieExistsByIdentifier(String movieIdentifier) {
@@ -50,38 +53,41 @@ public class MovieService {
         return this.repository.findAll();
     }
 
-    public Movie save(Movie movie) {
-        Set<Director> directorSet = movie.getDirectors();
-        Set<Writer> writerSet = movie.getWriters();
-        Set<Genre> genreSet = movie.getGenres();
+    @Transactional
+    public Movie createFromData(ScrapedDataDTO data) {
+        Movie.MovieBuilder movieBuilder = new Movie.MovieBuilder().reset();
+        movieBuilder
+                .withIdentifier(data.getMovieIdentifier())
+                .withTitle(data.getTitle())
+                .withOriginalTitle(data.getOriginalTitle())
+                .withReleaseDate(data.getReleaseDate())
+                .withRuntime(data.getRuntime())
+                .withLanguage(data.getLanguage())
+                .withCountry(data.getCountry())
+                .withDirectors(
+                        data.getDirectorsSet().stream()
+                            .map(director -> directorService.ensureDirectorExist(director))
+                            .collect(Collectors.toSet()))
+                .withWriters(
+                        data.getWritersSet().stream()
+                            .map(writer -> writerService.ensureWriterExist(writer))
+                            .collect(Collectors.toSet()))
+                .withGenres(
+                        data.getGenresSet().stream()
+                            .map(genre -> genreService.ensureGenreExist(genre))
+                            .collect(Collectors.toSet()))
+                .withKeywords(
+                        data.getKeywordsSet().stream()
+                            .map(keyword -> keywordService.ensureKeywordExist(keyword))
+                            .collect(Collectors.toSet()))
+                .withStars(data.getStarActorsSet())
+                .withCovers(data.getCoverUrlsSet());
 
-        for(Director director : directorSet) {
-            var fetchedDirector = directorService.findDirectorByNameIgnoreCase(director.getName());
-            if(fetchedDirector.isEmpty()) {
-                directorService.save(director);
-            } else {
-                directorSet.remove(director);
-                directorSet.add(fetchedDirector.get());
-            }
-        }
-        for(Writer writer : writerSet) {
-            var fetchedWriter = writerService.findWriterByNameIgnoreCase(writer.getName());
-            if(fetchedWriter.isEmpty()) {
-                writerService.save(writer);
-            } else {
-                writerSet.remove(writer);
-                writerSet.add(fetchedWriter.get());
-            }
-        }
-        for(Genre genre : genreSet) {
-            var fetchedGenre = genreService.findGenreByNameIgnoreCase(genre.getName());
-            if(fetchedGenre.isEmpty()) {
-                genreService.save(genre);
-            } else {
-                genreSet.remove(genre);
-                genreSet.add(fetchedGenre.get());
-            }
-        }
+        return movieBuilder.build();
+    }
+
+    @Transactional
+    public Movie save(Movie movie) {
         return this.repository.save(movie);
     }
 

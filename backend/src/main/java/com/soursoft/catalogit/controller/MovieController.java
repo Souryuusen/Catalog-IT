@@ -50,7 +50,7 @@ public class MovieController {
             throw new MovieAlreadyExistsException("Movie with provided identifier already exists!");
         } else {
             ScrapedDataDTO scrapedDataDTO = imdbUtility.scrapeImdb(request.getIdentifier());
-            Movie newMovie = new Movie(scrapedDataDTO);
+            Movie newMovie = this.service.createFromData(scrapedDataDTO);
             return this.service.save(newMovie);
         }
     }

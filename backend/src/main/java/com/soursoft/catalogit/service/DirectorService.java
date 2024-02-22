@@ -24,4 +24,13 @@ public class DirectorService {
     public Optional<Director> findDirectorByNameIgnoreCase(String name) {
         return this.repository.findDirectorByNameIgnoreCase(name);
     }
+
+    public Director ensureDirectorExist(String directorName) {
+        var fetchedDirector = this.repository.findDirectorByNameIgnoreCase(directorName);
+        if(fetchedDirector.isPresent()) {
+            return fetchedDirector.get();
+        } else {
+            return this.repository.save(new Director(directorName));
+        }
+    }
 }

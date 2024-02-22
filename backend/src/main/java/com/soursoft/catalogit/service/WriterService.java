@@ -25,4 +25,13 @@ public class WriterService {
     public Optional<Writer> findWriterByNameIgnoreCase(String name) {
         return this.repository.findWriterByNameIgnoreCase(name);
     }
+
+    public Writer ensureWriterExist(String writerName) {
+        var fetchedWriter = this.repository.findWriterByNameIgnoreCase(writerName);
+        if(fetchedWriter.isPresent()) {
+            return fetchedWriter.get();
+        } else {
+            return this.repository.save(new Writer(writerName));
+        }
+    }
 }

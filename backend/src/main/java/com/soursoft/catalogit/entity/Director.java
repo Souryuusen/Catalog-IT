@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "directors")
-public class Director {
+public class Director implements Comparable<Director>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,6 +52,20 @@ public class Director {
 
     public void setDirectedMovies(Set<Movie> directedMovies) {
         this.directedMovies = directedMovies;
+    }
+
+    @Override
+    public int compareTo(Director o) {
+
+        if (o.getClass() != this.getClass()) throw new ClassCastException("Cannot compare objects of different classes");
+
+        int compareResult;
+        if(getDirectorId() != 0 && o.getDirectorId() != 0) {
+            compareResult = Long.compare(getDirectorId(), o.getDirectorId());
+        } else {
+            compareResult = getName().compareTo(o.getName());
+        }
+        return compareResult;
     }
 
     @Override

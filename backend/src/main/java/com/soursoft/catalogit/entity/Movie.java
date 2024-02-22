@@ -82,8 +82,14 @@ public class Movie {
     )
     private Set<Genre> genres;
 
-    @ElementCollection
-    private Set<String> keywords;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonManagedReference
+    @JoinTable(
+            name = "movie_keywords",
+            joinColumns = @JoinColumn( name = "movie_id"),
+            inverseJoinColumns = @JoinColumn( name = "keyword_id")
+    )
+    private Set<Keyword> keywords;
 
     @ElementCollection
     private Set<String> stars;
@@ -108,7 +114,7 @@ public class Movie {
 
     public Movie(String title, String originalTitle, String runtime,
                     String countryOfOrigin, String language, Set<Director> directors,
-                        Set<Writer> writers, Set<Genre> genres, Set<String> keywords,
+                        Set<Writer> writers, Set<Genre> genres, Set<Keyword> keywords,
                             Set<String> stars, Set<String> covers, String movieIdentifier) {
         this.title = title;
         this.originalTitle = originalTitle;
@@ -126,28 +132,6 @@ public class Movie {
 
     public Movie(Movie movie) {
 
-    }
-
-    public Movie(ScrapedDataDTO scrapedData) {
-        this.movieIdentifier = scrapedData.getMovieIdentifier();
-        this.title = scrapedData.getTitle();
-        this.originalTitle = scrapedData.getOriginalTitle();
-        this.releaseDate = scrapedData.getReleaseDate();
-        this.runtime = scrapedData.getRuntime();
-        this.language = scrapedData.getLanguage();
-        this.countryOfOrigin = scrapedData.getCountry();
-        this.directors = scrapedData.getDirectorsSet().stream()
-                .map(s -> new Director(s))
-                .collect(Collectors.toSet());
-        this.writers = scrapedData.getWritersSet().stream()
-                .map(s -> new Writer(s))
-                .collect(Collectors.toSet());
-        this.genres = scrapedData.getGenresSet().stream()
-                .map(s -> new Genre(s))
-                .collect(Collectors.toSet());
-        this.keywords = scrapedData.getKeywordsSet();
-        this.stars = scrapedData.getStarActorsSet();
-        this.covers = scrapedData.getCoverUrlsSet();
     }
 
     public long getMovieId() {
@@ -218,11 +202,11 @@ public class Movie {
         this.genres = genres;
     }
 
-    public Set<String> getKeywords() {
+    public Set<Keyword> getKeywords() {
         return keywords;
     }
 
-    public void setKeywords(Set<String> keywords) {
+    public void setKeywords(Set<Keyword> keywords) {
         this.keywords = keywords;
     }
 
@@ -304,6 +288,11 @@ public class Movie {
             return this;
         }
 
+        public MovieBuilder withIdentifier(String identifier) {
+            getBuildedMovie().setMovieIdentifier(identifier);
+            return this;
+        }
+
         public MovieBuilder withTitle(String title) {
             getBuildedMovie().setTitle(title);
             return this;
@@ -349,7 +338,7 @@ public class Movie {
             return this;
         }
 
-        public MovieBuilder withKeywords(Set<String> keywords) {
+        public MovieBuilder withKeywords(Set<Keyword> keywords) {
             getBuildedMovie().setKeywords(keywords);
             return this;
         }
