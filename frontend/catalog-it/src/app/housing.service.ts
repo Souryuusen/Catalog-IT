@@ -1,5 +1,5 @@
 import { HammerModule } from '@angular/platform-browser';
-import { HousingLocation } from './housing-location';
+import { HousingLocation } from './entities/housing-location';
 import { Injectable } from '@angular/core';
 
 @Injectable({

@@ -1,7 +1,8 @@
 import { Routes } from "@angular/router"
-import { HomeComponent } from "./home/home.component"
-import { DetailsComponent } from "./details/details.component"
-import { SearchComponent } from "./search/search.component";
+import { HomeComponent } from "./components/home/home.component"
+import { DetailsComponent } from "./components/details/details.component"
+import { SearchComponent } from "./components/search/search.component";
+import { MovieListComponent } from "./components/movie-list/movie-list.component";
 
 const routeConfig: Routes = [
   {
@@ -18,6 +19,11 @@ const routeConfig: Routes = [
   path: "search",
   component: SearchComponent,
   title: "Find Movie"
+},
+{
+  path: "movies",
+  component: MovieListComponent,
+  title: "List Of Movies"
 }
 ]
 

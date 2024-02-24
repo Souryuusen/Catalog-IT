@@ -8,10 +8,10 @@ import { RouterModule } from '@angular/router';
   template: `
     <section class="navigation-bar">
       <div clas="topnav">
-        <button>Movie List</button>
+        <a [routerLink]="['/movies']" class="topnav-item">Movie List</a>
         <a>Search Movies</a>
         <div class="topnav-right">
-          <a>Login</a>
+          <a class="topnav-right-item">Login</a>
         </div>
       </div>
     </section>
