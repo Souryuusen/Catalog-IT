@@ -41,4 +41,18 @@ public class StringUtils {
         return sb.toString();
     }
 
+
+    public static String formatToUrl(String input) {
+        StringBuilder sb = new StringBuilder();
+
+        for(char c : input.toCharArray()) {
+            if(Character.isLetterOrDigit(c)) {
+                sb.append(c);
+            } else {
+                sb.append("%" + (int)c);
+            }
+        }
+
+        return sb.toString();
+    }
 }

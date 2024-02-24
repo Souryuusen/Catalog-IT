@@ -21,16 +21,18 @@ public class MovieService {
     private WriterService writerService;
     private GenreService genreService;
     private KeywordService keywordService;
+    private ScrappingService scrappingService;
 
     @Autowired
     public MovieService(MovieRepository repository, DirectorService directorService,
                             WriterService writerService, GenreService genreService,
-                                KeywordService keywordService) {
+                                KeywordService keywordService, ScrappingService scrappingService) {
         this.repository = repository;
         this.directorService = directorService;
         this.writerService = writerService;
         this.genreService = genreService;
         this.keywordService = keywordService;
+        this.scrappingService = scrappingService;
     }
 
     public boolean verifyMovieExistsByIdentifier(String movieIdentifier) {
@@ -84,6 +86,10 @@ public class MovieService {
                 .withCovers(data.getCoverUrlsSet());
 
         return movieBuilder.build();
+    }
+
+    public List<String> obtainIdentifiersFromTitle(String title) {
+        return this.scrappingService.searchForIdentifiersByTitle(title);
     }
 
     @Transactional

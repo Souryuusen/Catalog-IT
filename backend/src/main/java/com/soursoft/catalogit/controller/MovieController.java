@@ -44,6 +44,11 @@ public class MovieController {
         }
     }
 
+    @GetMapping(value = "movies/search/{movieTitle}")
+    public List<String> getIdentifiersFromTitle(@PathVariable String movieTitle) {
+        return this.service.obtainIdentifiersFromTitle(movieTitle);
+    }
+
     @PostMapping(value = "/movies/scrape", consumes = "application/json", produces = "application/json")
     public Movie createMovieByScrapping(@RequestBody MovieScrapePostRequest request) {
         if(this.service.verifyMovieExistsByIdentifier(request.getIdentifier())) {

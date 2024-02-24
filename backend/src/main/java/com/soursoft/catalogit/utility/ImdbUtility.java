@@ -67,6 +67,27 @@ public class ImdbUtility {
         }
     }
 
+    public List<String> searchForIdentifiersByTitle(String title) {
+        ArrayList<String> result = new ArrayList<>();
+        var sanitizedTitle = StringUtils.formatToCamelCase(title);
+        sanitizedTitle = StringUtils.formatToUrl(title);
+        var searchLink = "https://www.imdb.com/find/?q=" + sanitizedTitle;
+        try {
+            Document searchPage = retrievePageBody(searchLink);
+            Elements titles = searchPage.select("section[data-testid=\"find-results-section-title\"] .ipc-metadata-list-summary-item__t");
+            titles.stream().forEach(t -> {
+                var tmp = t.attr("href");
+                tmp = tmp.substring(0, tmp.indexOf("?"));
+                tmp = tmp.replace("/title/", "");
+                tmp = tmp.replace("/", "");
+                result.add(t.text() + ":" + tmp);
+            });
+        } catch (IOException e) {
+            throw new ImdbParsingException("Error occurred during parsing of title search page.");
+        }
+        return result;
+    }
+
     private boolean validateMovieIdentifier(String movieIdentifier) {
         return movieIdentifier.matches("(?i)^tt[0-9]{1,62}$");
     }
