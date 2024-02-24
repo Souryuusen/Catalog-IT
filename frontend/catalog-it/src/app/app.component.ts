@@ -2,17 +2,19 @@ import { Component } from '@angular/core'
 import { RouterOutlet } from '@angular/router'
 import { HomeComponent } from './home/home.component'
 import { RouterModule } from '@angular/router'
+import { NavigationBarComponent } from './navigation-bar/navigation-bar.component'
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HomeComponent, RouterModule],
+  imports: [RouterOutlet, HomeComponent, RouterModule, NavigationBarComponent],
   template:
   `
     <main>
         <header class="brand-name">
           <img class="brand-logo" src="./assets/logo.svg" alt="Logo" aria-hidden="true">
         </header>
+        <app-navigation-bar></app-navigation-bar>
         <section class="content">
         <router-outlet></router-outlet>
         </section>

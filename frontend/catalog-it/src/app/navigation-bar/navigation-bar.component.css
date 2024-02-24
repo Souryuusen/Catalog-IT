@@ -1,0 +1,18 @@
+.topnav {
+  border: solid, 1px;
+  border-radius: 4px;
+  background: fixed;
+  background-color: var(--primary-color);
+}
+
+.topnav-right {
+  float: right;
+}
+
+.topnav a {
+  background-color: var(--secondary-color);
+}
+
+.topnav button :hover {
+  background-color: #aaaaaa;
+}
