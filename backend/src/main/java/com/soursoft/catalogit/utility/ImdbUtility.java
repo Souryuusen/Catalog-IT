@@ -1,10 +1,8 @@
 package com.soursoft.catalogit.utility;
 
-import com.soursoft.catalogit.dto.ScrapedDataDTO;
-import com.soursoft.catalogit.entity.Movie;
+import com.soursoft.catalogit.dto.MovieDataDTO;
 import com.soursoft.catalogit.exception.ImdbParsingException;
 import com.soursoft.catalogit.exception.MovieIdentifierValidationException;
-import com.soursoft.catalogit.service.ScrappingService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,11 +26,11 @@ public class ImdbUtility {
 
     public ImdbUtility() {}
 
-    public ScrapedDataDTO scrapeImdb(String movieIdentifier) {
+    public MovieDataDTO scrapeImdb(String movieIdentifier) {
         if(!validateMovieIdentifier(movieIdentifier)) {
             throw new MovieIdentifierValidationException("Provided identifier \"" + movieIdentifier + "\" is not valid!");
         } else {
-            ScrapedDataDTO data = new ScrapedDataDTO();
+            MovieDataDTO data = new MovieDataDTO();
             data.setMovieIdentifier(movieIdentifier);
             try {
                 Document moviePage = retrievePageBody("https://www.imdb.com/title/" + movieIdentifier);
@@ -57,7 +55,7 @@ public class ImdbUtility {
                 data.setProductionDetailsMap(productionDetails);
                 data.setRuntime(data.getProductionDetailsMap().get("RUNTIME"));
                 data.setLanguage(data.getProductionDetailsMap().get("LANGUAGE"));
-                data.setCountry(data.getProductionDetailsMap().get("COUNTRY"));
+                data.setCountryOfOrigin(data.getProductionDetailsMap().get("COUNTRY"));
                 data.setReleaseDate(data.getProductionDetailsMap().get("RELEASE_DATE"));
 
                 return data;

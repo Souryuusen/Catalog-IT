@@ -1,6 +1,6 @@
 package com.soursoft.catalogit.service;
 
-import com.soursoft.catalogit.dto.ScrapedDataDTO;
+import com.soursoft.catalogit.dto.MovieDataDTO;
 import com.soursoft.catalogit.entity.*;
 import com.soursoft.catalogit.exception.MovieNotFoundException;
 import com.soursoft.catalogit.repository.MovieRepository;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,7 +55,7 @@ public class MovieService {
     }
 
     @Transactional
-    public Movie createFromData(ScrapedDataDTO data) {
+    public Movie createFromData(MovieDataDTO data) {
         Movie.MovieBuilder movieBuilder = new Movie.MovieBuilder().reset();
         movieBuilder
                 .withIdentifier(data.getMovieIdentifier())
@@ -65,7 +64,7 @@ public class MovieService {
                 .withReleaseDate(data.getReleaseDate())
                 .withRuntime(data.getRuntime())
                 .withLanguage(data.getLanguage())
-                .withCountry(data.getCountry())
+                .withCountry(data.getCountryOfOrigin())
                 .withDirectors(
                         data.getDirectorsSet().stream()
                             .map(director -> directorService.ensureDirectorExist(director))

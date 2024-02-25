@@ -1,6 +1,6 @@
 package com.soursoft.catalogit.service;
 
-import com.soursoft.catalogit.dto.ScrapedDataDTO;
+import com.soursoft.catalogit.dto.MovieDataDTO;
 import com.soursoft.catalogit.utility.ImdbUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class ScrappingService {
         this.imdbUtility = imdbUtility;
     }
 
-    public ScrapedDataDTO obtainMovieDataByIdentifier(String identifier) {
+    public MovieDataDTO obtainMovieDataByIdentifier(String identifier) {
         return imdbUtility.scrapeImdb(identifier);
     }
 

@@ -1,14 +1,10 @@
 package com.soursoft.catalogit.dto;
 
-import org.antlr.v4.runtime.tree.Tree;
-
 import java.util.*;
 
-public class ScrapedDataDTO {
+public class MovieDataDTO {
 
     private final int STARTING_CAPACITY = 8;
-
-    public enum PRODUCTION_KEYS {RUNTIME, COUNTRY, LANGUAGE, RELEASE_DATE};
 
     private String movieIdentifier;
     private String title;
@@ -16,7 +12,7 @@ public class ScrapedDataDTO {
     private String runtime;
     private String language;
     private String releaseDate;
-    private String country;
+    private String countryOfOrigin;
     private Set<String> directorsSet = new HashSet<>(STARTING_CAPACITY);
     private Set<String> writersSet = new HashSet<>(STARTING_CAPACITY);
     private Set<String> genresSet = new HashSet<>(STARTING_CAPACITY);
@@ -25,9 +21,9 @@ public class ScrapedDataDTO {
     private Set<String> coverUrlsSet = new HashSet<>(STARTING_CAPACITY);
     private Map<String, String> productionDetailsMap = new HashMap<>();
 
-    public ScrapedDataDTO() {}
+    public MovieDataDTO() {}
 
-    public ScrapedDataDTO(String title, String originalTitle) {
+    public MovieDataDTO(String title, String originalTitle) {
         this.title = title;
         this.originalTitle = originalTitle;
     }
@@ -128,12 +124,12 @@ public class ScrapedDataDTO {
         this.releaseDate = releaseDate;
     }
 
-    public String getCountry() {
-        return country;
+    public String getCountryOfOrigin() {
+        return countryOfOrigin;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setCountryOfOrigin(String countryOfOrigin) {
+        this.countryOfOrigin = countryOfOrigin;
     }
 
     public String getMovieIdentifier() {

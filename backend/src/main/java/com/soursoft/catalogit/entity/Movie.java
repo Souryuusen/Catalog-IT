@@ -1,7 +1,6 @@
 package com.soursoft.catalogit.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.soursoft.catalogit.dto.ScrapedDataDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -12,7 +11,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "movies")

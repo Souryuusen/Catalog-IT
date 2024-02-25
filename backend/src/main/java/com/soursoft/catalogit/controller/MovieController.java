@@ -1,13 +1,12 @@
 package com.soursoft.catalogit.controller;
 
-import com.soursoft.catalogit.dto.ScrapedDataDTO;
+import com.soursoft.catalogit.dto.MovieDataDTO;
 import com.soursoft.catalogit.entity.Movie;
 import com.soursoft.catalogit.exception.MovieAlreadyExistsException;
 import com.soursoft.catalogit.service.MovieService;
 import com.soursoft.catalogit.utility.ImdbUtility;
 import com.soursoft.catalogit.valueobject.requests.MovieScrapePostRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,8 +54,8 @@ public class MovieController {
         if(this.service.verifyMovieExistsByIdentifier(request.getIdentifier())) {
             throw new MovieAlreadyExistsException("Movie with provided identifier already exists!");
         } else {
-            ScrapedDataDTO scrapedDataDTO = imdbUtility.scrapeImdb(request.getIdentifier());
-            Movie newMovie = this.service.createFromData(scrapedDataDTO);
+            MovieDataDTO movieDataDTO = imdbUtility.scrapeImdb(request.getIdentifier());
+            Movie newMovie = this.service.createFromData(movieDataDTO);
             return this.service.save(newMovie);
         }
     }
