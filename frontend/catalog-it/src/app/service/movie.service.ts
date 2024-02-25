@@ -31,8 +31,9 @@ export class MovieService {
     return this.http.get<MovieShort[]>(moviesShortUrl, {responseType: "json"});
   }
 
-  fetchMovieById(id: number): Movie | undefined {
-    return undefined;
+  fetchMovieById(id: string): Observable<Movie> | undefined {
+    var movieUrl = "http://localhost:8080/api/movies/" + id;
+    return this.http.get<Movie>(movieUrl, {responseType: "json"});
   }
 
   fetchMovieByTitle(title: string): Movie[] | undefined {

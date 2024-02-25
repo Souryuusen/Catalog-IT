@@ -23,11 +23,11 @@ export class MovieListComponent {
 
   constructor(movieService: MovieService) {
     this.movieService = movieService;
-    this.obtainAllMovies();
+    this.obtainAllMoviesShort();
 
   }
 
-  obtainAllMovies() {
+  private obtainAllMoviesShort() {
     this.movieService.fetchAllMoviesShort()?.subscribe(movies => {
       this.movieList = movies;
       this.loaded = true;
