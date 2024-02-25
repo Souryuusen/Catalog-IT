@@ -3,11 +3,12 @@ import { RouterOutlet } from '@angular/router'
 import { HomeComponent } from './components/home/home.component'
 import { RouterModule } from '@angular/router'
 import { NavigationBarComponent } from './components/navigation-bar/navigation-bar.component'
+import { HttpClientModule } from '@angular/common/http'
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HomeComponent, RouterModule, NavigationBarComponent],
+  imports: [RouterOutlet, HomeComponent, RouterModule, NavigationBarComponent, HttpClientModule],
   template:
   `
     <main>
@@ -16,7 +17,7 @@ import { NavigationBarComponent } from './components/navigation-bar/navigation-b
         </header>
         <app-navigation-bar></app-navigation-bar>
         <section class="content">
-        <router-outlet></router-outlet>
+        <router-outlet ></router-outlet>
         </section>
     </main>
   `,

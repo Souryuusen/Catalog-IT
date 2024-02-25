@@ -5,17 +5,18 @@ import { Tag } from "./tag"
 import { Genre } from "./genre"
 
 export interface Movie {
-  id: number,
+  movieId: number,
   title: string,
   originalTitle: string,
   runtime: string,
-  releaseDate: string,
   countryOfOrigin: string,
   language: string,
-  writers: Writer[],
+  releaseDate: string,
+  movieIdentifier: string,
   directors: Director[],
-  actors: Actor[],
-  tags: Tag[],
+  writers: Writer[],
   genres: Genre[],
-  coverUrl: string
+  keywords: Tag[],
+  stars: Actor[],
+  covers: string[]
 }

@@ -1,0 +1,13 @@
+/* .movie-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 0fr));;
+  justify-content: space-evenly;
+} */
+
+.movie-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+
