@@ -1,6 +1,7 @@
 package com.soursoft.catalogit.controller;
 
 import com.soursoft.catalogit.dto.MovieDataDTO;
+import com.soursoft.catalogit.dto.MovieShortDataDTO;
 import com.soursoft.catalogit.entity.Movie;
 import com.soursoft.catalogit.exception.MovieAlreadyExistsException;
 import com.soursoft.catalogit.service.MovieService;
@@ -28,6 +29,11 @@ public class MovieController {
     @GetMapping("/movies")
     public List<Movie> fetchAllMovies() {
         return this.service.findAllMovies();
+    }
+
+    @GetMapping("/movies/short")
+    public List<MovieShortDataDTO> fetchAllMoviesShorData() {
+        return this.service.findAllMoviesShortData();
     }
 
     @GetMapping("/movies/{movieId}")

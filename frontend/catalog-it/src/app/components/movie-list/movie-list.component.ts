@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Movie } from './../../entities/movie';
+import { MovieShort } from './../../entities/movie';
 import { Component, inject } from '@angular/core';
 import { MovieService } from '../../service/movie.service';
 import { MovieTileComponent } from '../movie-tile/movie-tile.component';
@@ -18,7 +18,7 @@ import { MovieTileComponent } from '../movie-tile/movie-tile.component';
 })
 export class MovieListComponent {
   loaded: boolean = false;
-  movieList: Movie[] = [];
+  movieList: MovieShort[] = [];
   protected movieService: MovieService;
 
   constructor(movieService: MovieService) {
@@ -28,11 +28,8 @@ export class MovieListComponent {
   }
 
   obtainAllMovies() {
-    this.movieService.fetchAllMovies()?.subscribe(movies => {
+    this.movieService.fetchAllMoviesShort()?.subscribe(movies => {
       this.movieList = movies;
-      this.movieList?.forEach(movie => {
-        console.log('Movie\r\n' + movie.title)
-      });
       this.loaded = true;
     });
   }

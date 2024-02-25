@@ -1,6 +1,7 @@
 package com.soursoft.catalogit.service;
 
 import com.soursoft.catalogit.dto.MovieDataDTO;
+import com.soursoft.catalogit.dto.MovieShortDataDTO;
 import com.soursoft.catalogit.entity.*;
 import com.soursoft.catalogit.exception.MovieNotFoundException;
 import com.soursoft.catalogit.repository.MovieRepository;
@@ -52,6 +53,11 @@ public class MovieService {
 
     public List<Movie> findAllMovies() {
         return this.repository.findAll();
+    }
+
+    public List<MovieShortDataDTO> findAllMoviesShortData() {
+        var list = findAllMovies();
+        return list.stream().map(m -> new MovieShortDataDTO(m)).collect(Collectors.toList());
     }
 
     @Transactional

@@ -11,13 +11,14 @@ public class MovieShortDataDTO {
     private String countryOfOrigin;
     private String language;
     private String releaseDate;
+    private String cover;
 
     public MovieShortDataDTO() {
 
     }
 
     public MovieShortDataDTO(Long movieId, String title, String originalTitle, String runtime,
-                             String language, String releaseDate, String countryOfOrigin) {
+                             String language, String releaseDate, String countryOfOrigin, String cover) {
         this.movieId = movieId;
         this.title = title;
         this.originalTitle = originalTitle;
@@ -25,6 +26,7 @@ public class MovieShortDataDTO {
         this.language = language;
         this.releaseDate = releaseDate;
         this.countryOfOrigin = countryOfOrigin;
+        this.cover = cover;
     }
 
     public MovieShortDataDTO(Movie movie) {
@@ -35,6 +37,7 @@ public class MovieShortDataDTO {
         setRuntime(movie.getRuntime());
         setReleaseDate(movie.getReleaseDate());
         setCountryOfOrigin(movie.getCountryOfOrigin());
+        setCover(movie.getCovers().iterator().next());
     }
 
     public MovieShortDataDTO(MovieDataDTO data) {
@@ -45,6 +48,7 @@ public class MovieShortDataDTO {
         setRuntime(data.getRuntime());
         setReleaseDate(data.getReleaseDate());
         setCountryOfOrigin(data.getCountryOfOrigin());
+        setCover(data.getCoverUrlsSet().iterator().next());
     }
 
     public long getMovieId() {
@@ -101,5 +105,13 @@ public class MovieShortDataDTO {
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 }

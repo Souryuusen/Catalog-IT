@@ -1,22 +1,40 @@
+.movie-container {
+  border: 2px solid;
+  border-color: var(--primary-color);
+  border-radius: 8px;
+  background-color: var(--secondary-color);
+  width: 202px;
+  height: fit-content;
+  text-align: center;
+}
 
-.movie-item {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Centers the content horizontally */
-  text-align: center; /* Ensures text inside the h2 is centered if it wraps */
+.movie-heading {
+  color: white;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-color: var(--accent-color);
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+}
+
+.movie-details-container {
+  font-size: 10px;
+  text-align: center;
+  background-color: var(--secondary-color);
+  color: white;
+  list-style-type: none;
+}
+
+.movie-details-item {
+  margin-bottom: 5px;
+  margin-top: 5px;
+  border: 1px solid;
+  background-color: var(--accent-color);
+  border-color: var(--shadow-color);
+  gap: 5px;
 }
 
 .movie-cover {
-  position: relative;
-  max-width: 150px;
-  max-height: 225px;
-  display: block; /* Removes bottom space under the image */
-}
-
-.movie-item h2 {
-  margin: 10px 0 0; /* Adds space above the h2, adjust as needed */
-  width: 100%; /* Ensures the h2 aligns with the image's width */
-  text-align: center;
-  position: relative; /* Keeps the heading in flow, easier to manage than absolute positioning */
+  width: 200px;
+  height: 300px;
 }

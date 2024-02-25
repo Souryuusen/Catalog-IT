@@ -20,3 +20,14 @@ export interface Movie {
   stars: Actor[],
   covers: string[]
 }
+
+export interface MovieShort {
+  movieId: number,
+  title: string,
+  originalTitle: string,
+  runtime: string,
+  countryOfOrigin: string,
+  language: string,
+  releaseDate: string,
+  cover: string
+}

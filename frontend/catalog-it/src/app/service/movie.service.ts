@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Movie } from '../entities/movie';
+import { Movie, MovieShort } from '../entities/movie';
 import { Genre } from '../entities/genre';
 import { Tag } from '../entities/tag';
 import { HttpClient } from '@angular/common/http';
@@ -24,6 +24,11 @@ export class MovieService {
   fetchAllMovies(): Observable<Movie[]> | undefined {
     var moviesURL = `http://localhost:8080/api/movies`;
     return this.http.get<Movie[]>(moviesURL, {responseType: "json"});
+  }
+
+  fetchAllMoviesShort(): Observable<MovieShort[]> | undefined {
+    var moviesShortUrl = `http://localhost:8080/api/movies/short`;
+    return this.http.get<MovieShort[]>(moviesShortUrl, {responseType: "json"});
   }
 
   fetchMovieById(id: number): Movie | undefined {
