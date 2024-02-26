@@ -3,6 +3,7 @@ import { MovieShort } from './../../entities/movie';
 import { Component, inject } from '@angular/core';
 import { MovieService } from '../../service/movie.service';
 import { MovieTileComponent } from '../movie-tile/movie-tile.component';
+import { OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-movie-list',
@@ -16,15 +17,18 @@ import { MovieTileComponent } from '../movie-tile/movie-tile.component';
   `,
   styleUrl: './movie-list.component.css'
 })
-export class MovieListComponent {
+
+export class MovieListComponent implements OnInit{
   loaded: boolean = false;
   movieList: MovieShort[] = [];
   protected movieService: MovieService;
 
   constructor(movieService: MovieService) {
     this.movieService = movieService;
-    this.obtainAllMoviesShort();
+  }
 
+  ngOnInit(): void {
+    this.obtainAllMoviesShort();
   }
 
   private obtainAllMoviesShort() {

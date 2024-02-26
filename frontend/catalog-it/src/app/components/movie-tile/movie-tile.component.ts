@@ -2,6 +2,7 @@ import { routes } from './../../app.routes';
 import { MovieShort } from './../../entities/movie';
 import { Component, Input } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-movie-tile',
@@ -19,7 +20,7 @@ import { Router, RouterModule } from '@angular/router';
   `,
   styleUrl: './movie-tile.component.css'
 })
-export class MovieTileComponent {
+export class MovieTileComponent{
   @Input() movie!: MovieShort;
 
   constructor(private router: Router){
