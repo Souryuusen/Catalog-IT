@@ -3,6 +3,7 @@ import { MovieService } from './../../service/movie.service';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Movie } from '../../entities/movie';
+import { OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-movie-details',
@@ -17,7 +18,7 @@ import { Movie } from '../../entities/movie';
   styleUrl: './movie-details.component.css'
 })
 
-export class MovieDetailsComponent {
+export class MovieDetailsComponent implements OnInit {
   route: ActivatedRoute = inject(ActivatedRoute);
 
   private movieId: string;
@@ -26,11 +27,14 @@ export class MovieDetailsComponent {
 
   constructor(private movieService: MovieService) {
     this.movieId = this.route.snapshot.params['id'];
-    this.fetchMovieById()
   }
 
-  private fetchMovieById() {
-    this.movieService.fetchMovieById(this.movieId)?.subscribe(movie => {
+  ngOnInit(): void {
+    this.fetchMovieById(this.movieId)
+  }
+
+  private fetchMovieById(id: string) {
+    this.movieService.fetchMovieById(id)?.subscribe(movie => {
       this.movie = movie;
       this.loaded = true;
     });
