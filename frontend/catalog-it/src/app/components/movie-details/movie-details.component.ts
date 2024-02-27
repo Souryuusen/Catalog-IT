@@ -11,21 +11,30 @@ import { OnInit } from '@angular/core';
   imports: [CommonModule, RouterModule],
   providers: [MovieService],
   template: `
-    <section *ngIf="loaded">
-      <h2>{{movie?.title}}</h2>
+    <section *ngIf="loaded && movie !== undefined">
+      <article class="movie-details-container">
+        <div class="movie-details-container-left">
+          <h2 class="movie-details-heading, center-align">{{movie.title}}</h2>
+          <h3 class="movie-details-heading, left-align" *ngIf='movie.originalTitle === ""'>Also known as: {{movie.originalTitle}}</h3>
+        </div>
+        <div class="movie-details-container-right">
+          <img class="movie-cover" [src]="movie.covers[0]">
+        </div>
+
+      </article>
+
+
     </section>
   `,
   styleUrl: './movie-details.component.css'
 })
 
 export class MovieDetailsComponent implements OnInit {
-  route: ActivatedRoute = inject(ActivatedRoute);
-
   private movieId: string;
   protected movie: Movie | undefined = undefined;
   protected loaded: boolean = false;
 
-  constructor(private movieService: MovieService) {
+  constructor(private movieService: MovieService, private route: ActivatedRoute) {
     this.movieId = this.route.snapshot.params['id'];
   }
 

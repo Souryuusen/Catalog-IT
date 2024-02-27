@@ -1,0 +1,54 @@
+.movie-details-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 20px;
+  margin-left: 150px;
+  margin-right: 150px;
+  gap: 5px;
+  padding: 10px;
+  background-color: var(--primary-color);
+  border: 5px solid;
+  border-radius: 20px;
+}
+
+.movie-details-heading {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.left-align {
+  text-align: left;
+}
+
+.center-align {
+  text-align: center;
+}
+
+.right-align {
+  text-align: right;
+}
+
+.movie-details-container-left {
+  flex-basis: 65%;
+  border: 2px solid;
+  padding: 1px;
+  border-color: var(--shadow-color);
+  border-radius: 8px;
+  background-color: var(--secondary-color);
+}
+
+.movie-details-container-right {
+  flex-basis: 35%;
+  border: 2px solid;
+  border-color: var(--shadow-color);
+  border-radius: 8px;
+  background-color: var(--secondary-color);
+}
+
+
+.movie-cover {
+  width: 100%;
+  height: auto;
+  display: block;
+}

@@ -21,11 +21,8 @@ import { OnInit } from '@angular/core';
 export class MovieListComponent implements OnInit{
   loaded: boolean = false;
   movieList: MovieShort[] = [];
-  protected movieService: MovieService;
 
-  constructor(movieService: MovieService) {
-    this.movieService = movieService;
-  }
+  constructor(private movieService: MovieService) {}
 
   ngOnInit(): void {
     this.obtainAllMoviesShort();
