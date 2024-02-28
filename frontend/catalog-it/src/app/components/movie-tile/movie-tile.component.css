@@ -32,6 +32,8 @@
   background-color: var(--accent-color);
   border-color: var(--shadow-color);
   gap: 5px;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
 }
 
 .movie-cover {
