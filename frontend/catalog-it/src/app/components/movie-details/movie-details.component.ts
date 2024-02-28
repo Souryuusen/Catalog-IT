@@ -25,6 +25,9 @@ import { ActorService } from '../../service/actor.service';
 export class MovieDetailsComponent implements OnInit {
   private movieId: string;
 
+  private currentCoverIndex: number = 0;
+  protected currentCover: string = "";
+
   protected movie: Movie | undefined = undefined;
   protected loaded: boolean = false;
 
@@ -52,8 +55,41 @@ export class MovieDetailsComponent implements OnInit {
       this.writerString = this.writerService.joinWritersNames(this.movie.writers);
       this.actorString = this.actorService.joinActorsNames(this.movie.stars);
       this.tagString = this.tagService.joinTagsNames(this.movie.keywords);
+      this.currentCover = this.movie.covers[this.currentCoverIndex];
       this.loaded = true;
     });
+  }
+
+  protected changeCoverIndex(changeValue: number) {
+    if(this.movie !== undefined) {
+      if(changeValue > 0) {
+        if(this.currentCoverIndex + changeValue <= this.movie.covers.length - 1) {
+          this.currentCoverIndex += changeValue;
+        } else {
+          this.currentCoverIndex = this.movie.covers.length - 1;
+        }
+      } else if(changeValue < 0) {
+        if(this.currentCoverIndex + changeValue >= 0) {
+          this.currentCoverIndex += changeValue;
+        } else {
+          this.currentCoverIndex = 0;
+        }
+      }
+      this.currentCover = this.movie.covers[this.currentCoverIndex];
+      console.log('cover index', this.currentCoverIndex);
+      console.log('cover url', this.currentCover);
+    }
+  }
+
+  protected canChangeCoverIndex(changeValue: number): boolean {
+    if(this.movie !== undefined) {
+      if(changeValue < 0) {
+        return this.currentCoverIndex + changeValue >= 0;
+      } else if(changeValue > 0) {
+        return this.currentCoverIndex + changeValue <= this.movie.covers.length - 1;
+      }
+    }
+    return false;
   }
 
 }

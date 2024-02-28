@@ -30,7 +30,11 @@
     </div>
 
     <div class="movie-details-container-right">
-      <img class="movie-cover" [src]="movie.covers[0]">
+      <div class="image-slider">
+        <button *ngIf='canChangeCoverIndex(-1)' (click)="changeCoverIndex(-1)" class="arrow left-arrow">&#8592;</button>
+        <img *ngIf='this.currentCover !== ""' class="movie-cover" src="{{this.currentCover}}" alt="Display Image">
+        <button *ngIf='canChangeCoverIndex(1)' (click)="changeCoverIndex(1)" class="arrow right-arrow">&#8594;</button>
+      </div>
     </div>
 
   </article>
