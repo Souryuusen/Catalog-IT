@@ -58,6 +58,7 @@ public class ImdbUtility {
                 data.setCountryOfOrigin(data.getProductionDetailsMap().get("COUNTRY"));
                 data.setReleaseDate(data.getProductionDetailsMap().get("RELEASE_DATE"));
 
+
                 return data;
             } catch (IOException e) {
                 throw new ImdbParsingException("Exception Occurred during parsing of IMDB page!", e);
