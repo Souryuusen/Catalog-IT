@@ -1,0 +1,18 @@
+.detail-heading {
+  flex-basis: 20%;
+  padding-left: 10px;
+  text-align: right;
+}
+
+.detail-data {
+  flex-basis: 80%;
+  padding-right: 10px;
+  text-align: center;
+  text-wrap: wrap;
+  text-overflow: ellipsis;
+}
+
+
+.container {
+  display: flex;
+}

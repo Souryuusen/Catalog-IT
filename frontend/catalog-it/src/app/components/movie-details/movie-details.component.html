@@ -2,31 +2,12 @@
   <article class="movie-details-container">
     <div class="movie-details-container-left">
       <h2 class="movie-details-heading center-align">{{movie.title}}</h2>
-      <div *ngIf='movie.originalTitle !== ""'>
-        <span class="detail-heading">Also known as:</span>
-        <span class="detail-data">{{movie.originalTitle}}</span>
-      </div>
-      <div>
-        <span class="detail-heading">{{ this.movie.genres.length > 1 ? "Genres:" : "Genre:" }}</span>
-        <span class="detail-data">{{genreString}}</span>
-      </div>
-      <div>
-        <span class="detail-heading">{{ this.movie.directors.length > 1 ? "Directors:" : "Director:" }}</span>
-        <span class="detail-data">{{directorString}}</span>
-      </div>
-      <div>
-        <span class="detail-heading">{{ this.movie.writers.length > 1 ? "Writers:" : "Writer:" }}</span>
-        <span class="detail-data">{{writerString}}</span>
-      </div>
-      <div>
-        <span class="detail-heading">{{ this.movie.stars.length > 1 ? "Lead Actors:" : "Lead Actor:" }}</span>
-        <span class="detail-data">{{actorString}}</span>
-      </div>
-      <div>
-        <span class="detail-heading">{{ this.movie.keywords.length > 1 ? "Tags:" : "Tag:" }}</span>
-        <span class="detail-data">{{tagString}}</span>
-        <!-- <button *ngIf="this.movie.keywords.length > 10">+</button> -->
-      </div>
+      <app-movie-details-row class="movie-details-container-left"
+        *ngFor="let md of movieData"
+          [message]="md.dataHeader"
+          [value]="md.dataValue"
+          [visible]='md.dataValue !== ""'>
+      </app-movie-details-row>
     </div>
 
     <div class="movie-details-container-right">

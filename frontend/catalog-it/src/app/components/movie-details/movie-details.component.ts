@@ -1,19 +1,21 @@
+import { Movie } from './../../entities/movie';
 import { TagService } from './../../service/tag.service';
 import { WriterService } from './../../service/writer.service';
 import { DirectorService } from './../../service/director.service';
 import { GenreService } from './../../service/genre.service';
 import { CommonModule } from '@angular/common';
 import { MovieService } from './../../service/movie.service';
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { Movie } from '../../entities/movie';
 import { OnInit } from '@angular/core';
 import { ActorService } from '../../service/actor.service';
+import MovieData from '../../entities/movie-data';
+import { MovieDetailsRowComponent } from '../movie-details-row/movie-details-row.component';
 
 @Component({
   selector: 'app-movie-details',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, MovieDetailsRowComponent],
   providers: [
     MovieService, GenreService, WriterService, DirectorService,
     ActorService
@@ -37,6 +39,8 @@ export class MovieDetailsComponent implements OnInit {
   protected actorString: string = "";
   protected tagString: string = "";
 
+  protected movieData: MovieData[] = [];
+
   constructor(private movieService: MovieService, private genreService: GenreService,
                 private directorService: DirectorService, private writerService: WriterService,
                   private actorService: ActorService, private tagService: TagService, private route: ActivatedRoute) {
@@ -50,11 +54,20 @@ export class MovieDetailsComponent implements OnInit {
   private fetchMovieById(id: string) {
     this.movieService.fetchMovieById(id)?.subscribe(movie => {
       this.movie = movie;
+
       this.genreString = this.genreService.joinGenresNames(this.movie.genres);
       this.directorString = this.directorService.joinDirectorsNames(this.movie.directors);
       this.writerString = this.writerService.joinWritersNames(this.movie.writers);
       this.actorString = this.actorService.joinActorsNames(this.movie.stars);
       this.tagString = this.tagService.joinTagsNames(this.movie.keywords);
+
+      this.movieData.push(new MovieData("Also known as:", this.movie.originalTitle));
+      this.movieData.push(new MovieData(`Genre${this.movie.genres.length > 1 ? "s:" : ":"}`, this.genreString));
+      this.movieData.push(new MovieData(`Director${this.movie.directors.length > 1 ? "s:" : ":"}`, this.directorString));
+      this.movieData.push(new MovieData(`Writer${this.movie.writers.length > 1 ? "s:" : ":"}`, this.writerString));
+      this.movieData.push(new MovieData(`Actor${this.movie.stars.length > 1 ? "s:" : ":"}`, this.actorString));
+      this.movieData.push(new MovieData(`Keyword${this.movie.keywords.length > 1 ? "s:" : ":"}`, this.tagString));
+
       this.currentCover = this.movie.covers[this.currentCoverIndex];
       this.loaded = true;
     });
@@ -76,8 +89,6 @@ export class MovieDetailsComponent implements OnInit {
         }
       }
       this.currentCover = this.movie.covers[this.currentCoverIndex];
-      console.log('cover index', this.currentCoverIndex);
-      console.log('cover url', this.currentCover);
     }
   }
 
