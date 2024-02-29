@@ -2,7 +2,7 @@
   <article class="movie-details-container">
     <div class="movie-details-container-left">
       <h2 class="movie-details-heading center-align">{{movie.title}}</h2>
-      <app-movie-details-row class="movie-details-container-left"
+      <app-movie-details-row
         *ngFor="let md of movieData"
           [message]="md.dataHeader"
           [value]="md.dataValue"

@@ -61,7 +61,9 @@ export class MovieDetailsComponent implements OnInit {
       this.actorString = this.actorService.joinActorsNames(this.movie.stars);
       this.tagString = this.tagService.joinTagsNames(this.movie.keywords);
 
-      this.movieData.push(new MovieData("Also known as:", this.movie.originalTitle));
+      if(this.movie.originalTitle !== "") {
+        this.movieData.push(new MovieData("Also known as:", this.movie.originalTitle));
+      }
       this.movieData.push(new MovieData(`Genre${this.movie.genres.length > 1 ? "s:" : ":"}`, this.genreString));
       this.movieData.push(new MovieData(`Director${this.movie.directors.length > 1 ? "s:" : ":"}`, this.directorString));
       this.movieData.push(new MovieData(`Writer${this.movie.writers.length > 1 ? "s:" : ":"}`, this.writerString));

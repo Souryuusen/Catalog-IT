@@ -12,7 +12,9 @@
   text-overflow: ellipsis;
 }
 
-
-.container {
+div {
   display: flex;
+  flex-basis: auto;
+  width: 100%;
+  margin-right: 5px;
 }

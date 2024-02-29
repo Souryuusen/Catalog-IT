@@ -46,28 +46,17 @@
   background-color: var(--secondary-color);
 }
 
-.movie-details-container-left div {
+.movie-details-container-left app-movie-details-row {
   display: flex;
-  margin:5px;
+  margin-left: 5px;
+  margin-right: 5px;
   margin-top: 10px;
+  margin-bottom: 5px;
   background-color: var(--accent-color);
   border: 2px solid;
   border-color: var(--shadow-color);
   border-radius: 8px;
 }
-
-/* .detail-heading {
-  flex-basis: 20%;
-  padding-left: 10px;
-  text-align: right;
-}
-.detail-data {
-  flex-basis: 80%;
-  padding-right: 10px;
-  text-align: center;
-  text-wrap: wrap;
-  text-overflow: ellipsis;
-} */
 
 .movie-details-container-right {
   flex-basis: 35%;
