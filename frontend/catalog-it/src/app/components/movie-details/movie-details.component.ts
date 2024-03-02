@@ -31,7 +31,9 @@ export class MovieDetailsComponent implements OnInit {
   protected currentCover: string = "";
 
   protected movie: Movie | undefined = undefined;
+
   protected loaded: boolean = false;
+  protected userIsLogged: boolean = false;
 
   protected genreString: string = "";
   protected directorString: string = "";
@@ -49,6 +51,7 @@ export class MovieDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchMovieById(this.movieId)
+    this.verifyUser();
   }
 
   private fetchMovieById(id: string) {
@@ -73,6 +76,14 @@ export class MovieDetailsComponent implements OnInit {
       this.currentCover = this.movie.covers[this.currentCoverIndex];
       this.loaded = true;
     });
+  }
+
+  /**
+   * @todo Create Logic For User Authentication and storing token
+   *
+   */
+  private verifyUser() {
+    this.userIsLogged = true;
   }
 
   protected changeCoverIndex(changeValue: number) {
