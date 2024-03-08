@@ -11,11 +11,13 @@ import { OnInit } from '@angular/core';
 import { ActorService } from '../../service/actor.service';
 import MovieData from '../../entities/movie-data';
 import { MovieDetailsRowComponent } from '../movie-details-row/movie-details-row.component';
+import { UserActionsComponent } from '../user-actions/user-actions.component';
+import { User } from '../../entities/user';
 
 @Component({
   selector: 'app-movie-details',
   standalone: true,
-  imports: [CommonModule, RouterModule, MovieDetailsRowComponent],
+  imports: [CommonModule, RouterModule, MovieDetailsRowComponent, UserActionsComponent],
   providers: [
     MovieService, GenreService, WriterService, DirectorService,
     ActorService
@@ -31,6 +33,7 @@ export class MovieDetailsComponent implements OnInit {
   protected currentCover: string = "";
 
   protected movie: Movie | undefined = undefined;
+  protected user: User = {username: "test", password: "test", authToken: "test", role: "test"};
 
   protected loaded: boolean = false;
   protected userIsLogged: boolean = false;

@@ -1,0 +1,14 @@
+.user-actions-container {
+  display: flex;
+  flex-basis: auto;
+  width: 100%;
+  margin-right: 5px;
+}
+
+.user-actions-button-container {
+  flex-basis: 80%;
+  padding-right: 10px;
+  text-align: center;
+  text-wrap: wrap;
+  text-overflow: ellipsis;
+}

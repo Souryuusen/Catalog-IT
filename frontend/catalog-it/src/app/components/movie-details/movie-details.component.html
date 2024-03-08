@@ -9,21 +9,8 @@
           [visible]='md.dataValue !== ""'>
       </app-movie-details-row>
 
-    <div class="user-actions-container" *ngIf="this.userIsLogged">
-      <div class="user-actions-button-container">
-        <button><strong>👁</strong> Add to watchlist</button>
-      </div>
-      <div class="user-actions-button-container">
-        <button>Mark as already seen</button>
-        <button>Add new review</button>
-      </div>
-      <div class="user-actions-stats-container">
-        <span>Average rating: #.#</span>
-        <span>Wants to watch: #</span>
-        <span>Watched: #</span>
-        <span>Reviewed: #</span>
-      </div>
-    </div>
+      <app-user-actions [movie]="this.movie" [user]="this.user"></app-user-actions>
+
 
     <div class="user-reviews-rating">
       <span>10 Star Rating System (displayed as movie icons)</span>
