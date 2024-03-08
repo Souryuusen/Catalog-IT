@@ -8,7 +8,13 @@
   <p> The backend part of the Project is created with Java 21 technology stack which consists of solutions based on Spring Boot Framework with MySQL database as the main data storage solution.</p>
   <p>Following Spring Boot Framework components are currently being used in the development of the Project:</p>
   <ul>
-    <li></li>
+    <li>Spring Boot 3.2.2</li>
+    <li>Spring Boot Data JPA</li>
+    <li>Spring Boot Data REST</li>
+    <li>Spring Boot Security</li>
+    <li>Spring Boot Validation</li>
+    <li>Spring Boot Devtools</li>
+    <li>Spring Boot Configuration Processor</li>
   </ul>
 <h2>About Frontend</h2>
 
