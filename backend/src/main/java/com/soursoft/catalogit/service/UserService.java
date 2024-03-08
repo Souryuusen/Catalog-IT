@@ -1,5 +1,6 @@
 package com.soursoft.catalogit.service;
 
+import com.soursoft.catalogit.dto.UserDTO;
 import com.soursoft.catalogit.entity.Role;
 import com.soursoft.catalogit.entity.User;
 import com.soursoft.catalogit.repository.UserRepository;
@@ -9,21 +10,40 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+@Service
 public class UserService implements UserDetailsService {
 
-    private UserRepository repositiory;
+    private final UserRepository repository;
+
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository repositiory) {
-        this.repositiory = repositiory;
+    public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+        this.repository = repository;
     }
 
     public User findUserByUsername(String username) {
-        return this.repositiory.findByUsername(username);
+        return this.repository.findByUsernameIgnoreCase(username);
+    }
+
+    public boolean userExist(UserDTO user) {
+        var foundUsername = this.repository.findByUsernameIgnoreCase(user.getUsername());
+        var foundEmail = this.repository.findByEmailIgnoreCase(user.getEmail());
+
+        return (foundUsername != null || foundEmail != null);
+    }
+
+    public User registerUser(UserDTO userData) {
+        userData.setPassword(passwordEncoder.encode(userData.getPassword()));
+        User userToRegister = new User(userData);
+        return this.repository.save(userToRegister);
     }
 
     @Override
@@ -33,7 +53,7 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("Username " + username + " has not been found!");
         } else {
             return new org.springframework.security.core.userdetails.User(foundUser.getUsername(),
-                            foundUser.getPassword(), mapRolesToAuthorities(foundUser.getUserRoles()));
+                            foundUser.getPassword(), mapRolesToAuthorities(foundUser.getRoles()));
         }
     }
 

@@ -2,6 +2,8 @@ package com.soursoft.catalogit.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "roles")
 public class Role {
@@ -13,6 +15,9 @@ public class Role {
 
     @Column(name = "rname")
     private String roleName;
+
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> roleUsers;
 
     public Role() {}
 

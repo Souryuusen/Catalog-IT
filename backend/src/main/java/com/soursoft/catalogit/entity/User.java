@@ -1,5 +1,6 @@
 package com.soursoft.catalogit.entity;
 
+import com.soursoft.catalogit.dto.UserDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -31,8 +32,14 @@ public class User {
     private String password;
     @Column(name = "active")
     private boolean active;
-    @Column(name = "role")
-    private Set<Role> userRoles;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "uid"),
+            inverseJoinColumns = @JoinColumn(name = "rid")
+    )
+    private Set<Role> roles;
 
     public User() {}
 
@@ -41,7 +48,14 @@ public class User {
         this.email = email;
         this.password = password;
         this.active = active;
-        this.userRoles = userRoles;
+        this.roles = userRoles;
+    }
+
+    public User(UserDTO userDTO) {
+        this.username = userDTO.getUsername();
+        this.password = userDTO.getPassword();
+        this.email = userDTO.getEmail();
+        this.active = false;
     }
 
     public long getUserId() {
@@ -84,23 +98,23 @@ public class User {
         this.active = active;
     }
 
-    public Set<Role> getUserRoles() {
-        return userRoles;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setUserRoles(Set<Role> userRoles) {
-        this.userRoles = userRoles;
+    public void setRoles(Set<Role> userRoles) {
+        this.roles = userRoles;
     }
 
-    protected void addUserRole(Role role) {
-        if(!this.userRoles.contains(role)) {
-            this.userRoles.add((role));
+    protected void addRole(Role role) {
+        if(!this.roles.contains(role)) {
+            this.roles.add((role));
         }
     }
 
-    protected void removeUserRole(Role role) {
-        if(this.userRoles.contains(role)) {
-            this.userRoles.remove(role);
+    protected void removeRole(Role role) {
+        if(this.roles.contains(role)) {
+            this.roles.remove(role);
         }
     }
 }
