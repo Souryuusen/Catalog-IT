@@ -10,6 +10,8 @@ import { RouterModule } from '@angular/router';
       <div clas="topnav">
         <a routerLink="/movies" class="topnav-item">Browse</a>
         <a routerLink="/search" class="topnav-item">Find</a>
+        <a routerLink="/register" class="topnav-item">Register</a>
+        <a routerLink="/login" class="topnav-item">Login</a>
       </div>
     </section>
   `,

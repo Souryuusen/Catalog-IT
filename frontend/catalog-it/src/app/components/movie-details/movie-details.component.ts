@@ -33,7 +33,7 @@ export class MovieDetailsComponent implements OnInit {
   protected currentCover: string = "";
 
   protected movie: Movie | undefined = undefined;
-  protected user: User = {username: "test", password: "test", authToken: "test", role: "test"};
+  protected user: User = {username: "test", password: "test", email: "test@test.com"};
 
   protected loaded: boolean = false;
   protected userIsLogged: boolean = false;

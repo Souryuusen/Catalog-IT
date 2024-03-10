@@ -22,18 +22,33 @@ export class MovieService {
   }
 
   fetchAllMovies(): Observable<Movie[]> | undefined {
-    var moviesURL = `http://localhost:8080/api/movies`;
-    return this.http.get<Movie[]>(moviesURL, {responseType: "json"});
+    var moviesURL = `http://localhost:8080/api/movie/movies`;
+    return this.http.get<Movie[]>(moviesURL, {
+      headers: {
+        Authorization: "Basic YWRtaW46YWRtaW4="
+      },
+      responseType: "json"
+    });
   }
 
   fetchAllMoviesShort(): Observable<MovieShort[]> | undefined {
-    var moviesShortUrl = `http://localhost:8080/api/movies/short`;
-    return this.http.get<MovieShort[]>(moviesShortUrl, {responseType: "json"});
+    var moviesShortUrl = `http://localhost:8080/api/movie/movies/short`;
+    return this.http.get<MovieShort[]>(moviesShortUrl, {
+      headers: {
+        Authorization: "Basic YWRtaW46YWRtaW4="
+      },
+      responseType: "json"
+    });
   }
 
   fetchMovieById(id: string): Observable<Movie> | undefined {
-    var movieUrl = "http://localhost:8080/api/movies/" + id;
-    return this.http.get<Movie>(movieUrl, {responseType: "json"});
+    var movieUrl = "http://localhost:8080/api/movie/movies/" + id;
+    return this.http.get<Movie>(movieUrl, {
+      headers: {
+        Authorization: "Basic YWRtaW46YWRtaW4="
+      },
+      responseType: "json"
+    });
   }
 
   fetchMovieByTitle(title: string): Movie[] | undefined {

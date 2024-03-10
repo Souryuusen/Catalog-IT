@@ -4,6 +4,9 @@ import { DetailsComponent } from "./components/details/details.component"
 import { SearchComponent } from "./components/search/search.component";
 import { MovieListComponent } from "./components/movie-list/movie-list.component";
 import { MovieDetailsComponent } from "./components/movie-details/movie-details.component";
+import { RegistrationFormComponent } from "./auth/Components/registration-form/registration-form.component";
+import { LoginComponent } from "./components/login/login.component";
+import { LoginFormComponent } from "./auth/Components/login-form/login-form.component";
 
 const routeConfig: Routes = [
   {
@@ -30,6 +33,16 @@ const routeConfig: Routes = [
     path: 'movie/:id',
     component: MovieDetailsComponent,
     title: "Movie Details"
+  },
+  {
+    path: "register",
+    component: RegistrationFormComponent,
+    title: "Register New User"
+  },
+  {
+    path: "login",
+    component: LoginFormComponent,
+    title: "Log in"
   }
 ]
 
