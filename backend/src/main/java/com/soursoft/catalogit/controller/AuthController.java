@@ -1,9 +1,19 @@
 package com.soursoft.catalogit.controller;
 
 import com.soursoft.catalogit.dto.UserDTO;
+import com.soursoft.catalogit.dto.UserLoginDTO;
+import com.soursoft.catalogit.dto.UserRegisterDTO;
+import com.soursoft.catalogit.entity.User;
 import com.soursoft.catalogit.exception.UserAlreadyExistException;
 import com.soursoft.catalogit.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authorization.AuthenticatedAuthorizationManager;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,28 +27,27 @@ import java.util.Base64;
 public class AuthController {
 
     private UserService userService;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager) {
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
     }
 
-    @PostMapping(value = "/user-auth", consumes = "application/json", produces = "application/json")
-    public UserDTO authenticateUser(@RequestBody UserDTO user) {
-        return new UserDTO();
+    @PostMapping(value = "/login", consumes = "application/json", produces = "application/json")
+    public UserDTO authenticateUser(@RequestBody UserLoginDTO user) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.username(), user.password()));
+        return userService.findUserByUsername(user.username()).convertToDTO();
     }
 
     @PostMapping(value = "/register", consumes = "application/json", produces = "application/json")
-    public UserDTO registerUser(@RequestBody UserDTO user) {
+    public ResponseEntity<?> registerUser(@RequestBody UserRegisterDTO user) {
         if(userService.userExist(user)) {
-            throw new UserAlreadyExistException("User with provided credentials already exist!");
+            return new ResponseEntity<>("User with provided credentials already exist.", HttpStatus.BAD_REQUEST);
         }
-        var registeredUser = userService.registerUser(user);
-        String toEncode = registeredUser.getUsername() + ":" + registeredUser.getPassword().substring(registeredUser.getPassword().length()-31, registeredUser.getPassword().length());
-        var tempAuthToken = Base64.getEncoder().encodeToString(toEncode.getBytes(StandardCharsets.UTF_8));
-        var registeredDTO = UserDTO.fromUser(registeredUser);
-        registeredDTO.setAuthToken(tempAuthToken);
-        return registeredDTO;
+        User registeredUser = this.userService.registerUser(user);
+        return new ResponseEntity<>(registeredUser.convertToDTO(), HttpStatusCode.valueOf(201));
     }
 
 }

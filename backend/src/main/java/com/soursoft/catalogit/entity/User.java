@@ -1,6 +1,7 @@
 package com.soursoft.catalogit.entity;
 
 import com.soursoft.catalogit.dto.UserDTO;
+import com.soursoft.catalogit.dto.UserRegisterDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -41,6 +42,10 @@ public class User {
     )
     private Set<Role> roles;
 
+    public UserDTO convertToDTO() {
+        return new UserDTO(getUserId(), getUsername(), getEmail(), getRoles());
+    }
+
     public User() {}
 
     public User(String username, String email, String password, boolean active, Set<Role> userRoles) {
@@ -49,13 +54,6 @@ public class User {
         this.password = password;
         this.active = active;
         this.roles = userRoles;
-    }
-
-    public User(UserDTO userDTO) {
-        this.username = userDTO.getUsername();
-        this.password = userDTO.getPassword();
-        this.email = userDTO.getEmail();
-        this.active = false;
     }
 
     public long getUserId() {

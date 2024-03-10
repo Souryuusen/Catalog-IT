@@ -1,6 +1,7 @@
 package com.soursoft.catalogit.service;
 
 import com.soursoft.catalogit.dto.UserDTO;
+import com.soursoft.catalogit.dto.UserRegisterDTO;
 import com.soursoft.catalogit.entity.Role;
 import com.soursoft.catalogit.entity.User;
 import com.soursoft.catalogit.repository.UserRepository;
@@ -33,16 +34,18 @@ public class UserService implements UserDetailsService {
         return this.repository.findByUsernameIgnoreCase(username);
     }
 
-    public boolean userExist(UserDTO user) {
-        var foundUsername = this.repository.findByUsernameIgnoreCase(user.getUsername());
-        var foundEmail = this.repository.findByEmailIgnoreCase(user.getEmail());
+    public boolean userExist(UserRegisterDTO user) {
+        var foundUsername = this.repository.findByUsernameIgnoreCase(user.username());
+        var foundEmail = this.repository.findByEmailIgnoreCase(user.email());
 
         return (foundUsername != null || foundEmail != null);
     }
 
-    public User registerUser(UserDTO userData) {
-        userData.setPassword(passwordEncoder.encode(userData.getPassword()));
-        User userToRegister = new User(userData);
+    public User registerUser(UserRegisterDTO userData) {
+        User userToRegister = new User();
+        userToRegister.setUsername(userData.username());
+        userToRegister.setEmail(userData.email());
+        userToRegister.setPassword(passwordEncoder.encode(userData.password()));
         return this.repository.save(userToRegister);
     }
 
@@ -59,7 +62,7 @@ public class UserService implements UserDetailsService {
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
         return roles.stream()
-                    .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName()))
                     .collect(Collectors.toList());
     }
 }
