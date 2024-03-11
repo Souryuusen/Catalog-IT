@@ -45,7 +45,7 @@ public class AuthController {
             return new ResponseEntity<>("User with provided credentials already exist.", HttpStatus.BAD_REQUEST);
         }
         User registeredUser = this.userService.registerUser(user);
-        return new ResponseEntity<>(registeredUser.convertToDTO(), HttpStatusCode.valueOf(201));
+        return new ResponseEntity<>("User registered successfully.", HttpStatusCode.valueOf(201));
     }
 
 }
