@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { User } from '../../entities/user';
+import { UserDTO } from '../../entities/user';
 import { Movie } from '../../entities/movie';
 import { CommonModule } from '@angular/common';
 
@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 })
 export class UserActionsComponent {
 
-  @Input() user!: User;
+  @Input() user!: UserDTO;
   @Input() movie!: Movie;
 
 }

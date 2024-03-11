@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { User } from './../entities/user';
+import { UserDTO, UserLoginDTO, UserRegisterDTO } from './../entities/user';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 export class RestService {
 
   private API: string = 'http://localhost:8080/api';
-  private token: string = "TEST_TOKEN";
+  private token: string = "Basic YWRtaW46YWRtaW4=";
 
   private ENDPOINTS = new Map<string, string>([
     ['AUTH_USER', `${this.API}/auth/user`],
@@ -18,24 +18,22 @@ export class RestService {
 
   constructor(private http: HttpClient) { }
 
-  public authenticateUser(authUsername: string, authPassword: string): Observable<User> {
+  public authenticateUser(user: UserLoginDTO): Observable<UserDTO> {
 
-    return this.http.post<User>(this.getEndpoint('AUTH_USER'), {
-      token: this.token,
-      username: authUsername,
-      password: authPassword
+    return this.http.post<UserDTO>(this.getEndpoint('AUTH_USER'), {
+      user
     }, {
       headers: {
-
+        Authorization: this.token,
       },
       responseType: "json"
     });
   }
 
-  public registerUser(user: User) {
-    return this.http.post<User>(this.getEndpoint('REGISTER_USER'), user, {
+  public registerUser(user: UserRegisterDTO) {
+    return this.http.post<UserRegisterDTO>(this.getEndpoint('REGISTER_USER'), user, {
       headers: {
-        Authorization: "Basic YWRtaW46YWRtaW4="
+        Authorization: this.token
       },
       responseType: "json"
     });
