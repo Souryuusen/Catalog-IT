@@ -1,9 +1,12 @@
 package com.soursoft.catalogit.service;
 
+import com.soursoft.catalogit.dto.MovieDataDTO;
 import com.soursoft.catalogit.dto.UserDTO;
 import com.soursoft.catalogit.dto.UserRegisterDTO;
+import com.soursoft.catalogit.entity.Movie;
 import com.soursoft.catalogit.entity.Role;
 import com.soursoft.catalogit.entity.User;
+import com.soursoft.catalogit.exception.UserByIdNotFoundException;
 import com.soursoft.catalogit.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +39,15 @@ public class UserService implements UserDetailsService {
         return this.repository.findByUsernameIgnoreCase(username);
     }
 
+    public User findUserById(Long userId) {
+        var result = this.repository.findById(userId);
+        if(result.isPresent()) {
+            return result.get();
+        } else {
+            throw new UserByIdNotFoundException("User by ID: " + userId + " has not been found!");
+        }
+    }
+
     public boolean userExist(UserRegisterDTO user) {
         var foundUsername = this.repository.findByUsernameIgnoreCase(user.username());
         var foundEmail = this.repository.findByEmailIgnoreCase(user.email());
@@ -47,6 +61,15 @@ public class UserService implements UserDetailsService {
         userToRegister.setEmail(userData.email());
         userToRegister.setPassword(passwordEncoder.encode(userData.password()));
         return this.repository.save(userToRegister);
+    }
+
+    public Set<Movie> fetchUserWatchlist(Long userId) {
+        return this.repository.findWatchlistByUserId(userId);
+    }
+
+    public void addMovieToWatchlist(User user, Movie movie) {
+        user.addMovieToWatchlist(movie);
+        this.repository.save(user);
     }
 
     @Override

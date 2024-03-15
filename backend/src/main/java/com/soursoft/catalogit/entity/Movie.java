@@ -14,7 +14,7 @@ import java.util.TreeSet;
 
 @Entity
 @Table(name = "movies")
-public class Movie {
+public class Movie implements Comparable<Movie>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -271,6 +271,11 @@ public class Movie {
     @Override
     public int hashCode() {
         return Objects.hash(getMovieIdentifier(), getTitle());
+    }
+
+    @Override
+    public int compareTo(Movie o) {
+        return o.getTitle().compareTo(this.getTitle());
     }
 
     public static class MovieBuilder {

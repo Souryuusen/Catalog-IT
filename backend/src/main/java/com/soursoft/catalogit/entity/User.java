@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.util.Set;
+import java.util.TreeSet;
 
 @Entity
 @Table(name = "users")
@@ -41,6 +42,14 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "rid")
     )
     private Set<Role> roles;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "user_watchlist",
+            joinColumns = @JoinColumn(name = "uid"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id")
+    )
+    private Set<Movie> watchlistSet = new TreeSet<>();
 
     public UserDTO convertToDTO() {
         return new UserDTO(getUserId(), getUsername(), getEmail(), getRoles());
@@ -114,6 +123,22 @@ public class User {
         if(this.roles.contains(role)) {
             this.roles.remove(role);
         }
+    }
+
+    public Set<Movie> getWatchlistSet() {
+        return watchlistSet;
+    }
+
+    public void setWatchlistSet(Set<Movie> watchlistSet) {
+        this.watchlistSet = watchlistSet;
+    }
+
+    public void addMovieToWatchlist(Movie movie) {
+        this.watchlistSet.add(movie);
+    }
+
+    public void removeMovieFromWatchlist(Movie movie) {
+        this.watchlistSet.remove(movie);
     }
 }
 

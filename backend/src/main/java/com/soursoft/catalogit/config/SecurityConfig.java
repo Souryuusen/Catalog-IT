@@ -49,7 +49,7 @@ public class SecurityConfig {
                           .requestMatchers(new AntPathRequestMatcher("/api/auth/register")).hasRole("ADMIN")
                           .requestMatchers(new AntPathRequestMatcher("/api/auth/login")).permitAll()
                           .requestMatchers(new AntPathRequestMatcher("/api/movie/**")).authenticated()
-                          .requestMatchers(new AntPathRequestMatcher("/api/movie/**")).authenticated();
+                          .requestMatchers(new AntPathRequestMatcher("/api/user/**")).authenticated();
                 })
                 .httpBasic(Customizer.withDefaults());
         return http.build();
