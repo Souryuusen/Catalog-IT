@@ -13,6 +13,7 @@ import MovieData from '../../entities/movie-data';
 import { MovieDetailsRowComponent } from '../movie-details-row/movie-details-row.component';
 import { UserActionsComponent } from '../user-actions/user-actions.component';
 import { UserDTO } from '../../entities/user';
+import { AuthService } from '../../auth/Services/auth.service';
 
 @Component({
   selector: 'app-movie-details',
@@ -20,7 +21,7 @@ import { UserDTO } from '../../entities/user';
   imports: [CommonModule, RouterModule, MovieDetailsRowComponent, UserActionsComponent],
   providers: [
     MovieService, GenreService, WriterService, DirectorService,
-    ActorService
+    ActorService, AuthService
   ],
   templateUrl: './movie-details.component.html',
   styleUrl: './movie-details.component.css'
@@ -33,7 +34,7 @@ export class MovieDetailsComponent implements OnInit {
   protected currentCover: string = "";
 
   protected movie: Movie | undefined = undefined;
-  protected user: UserDTO = {username: "test" , email: "test@test.com", userId: 0};
+  protected user: UserDTO = {username: "" , email: "", userId: 0};
 
   protected loaded: boolean = false;
   protected userIsLogged: boolean = false;
@@ -48,7 +49,8 @@ export class MovieDetailsComponent implements OnInit {
 
   constructor(private movieService: MovieService, private genreService: GenreService,
                 private directorService: DirectorService, private writerService: WriterService,
-                  private actorService: ActorService, private tagService: TagService, private route: ActivatedRoute) {
+                  private actorService: ActorService, private tagService: TagService, private authService: AuthService,
+                    private route: ActivatedRoute) {
     this.movieId = this.route.snapshot.params['id'];
   }
 
@@ -86,7 +88,10 @@ export class MovieDetailsComponent implements OnInit {
    *
    */
   private verifyUser() {
-    this.userIsLogged = true;
+    this.userIsLogged = this.authService.isUserLoggedIn();
+    if(this.userIsLogged) {
+      this.user = JSON.parse(sessionStorage['user']);
+    }
   }
 
   protected changeCoverIndex(changeValue: number) {

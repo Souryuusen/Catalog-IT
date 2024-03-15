@@ -9,23 +9,24 @@
           [visible]='md.dataValue !== ""'>
       </app-movie-details-row>
 
-      <app-user-actions [movie]="this.movie" [user]="this.user"></app-user-actions>
+      @if (this.userIsLogged) {
+        <app-user-actions [movie]="this.movie" [user]="this.user"></app-user-actions>
 
-
-    <div class="user-reviews-rating">
-      <span>10 Star Rating System (displayed as movie icons)</span>
-    </div>
-
-    <div class="user-reviews-container">
-      <div class="user-reviews-add-container">
-
-      </div>
-      <div class="user-reviews-list-container">
-        <div class="user-reviews-list-filter-container">
-          <span>Choose to show only user reviews or all public reviews</span>
+        <div class="user-reviews-rating">
+          <span>10 Star Rating System (displayed as movie icons)</span>
         </div>
-      </div>
-    </div>
+
+        <div class="user-reviews-container">
+          <div class="user-reviews-add-container">
+
+          </div>
+          <div class="user-reviews-list-container">
+            <div class="user-reviews-list-filter-container">
+              <span>Choose to show only user reviews or all public reviews</span>
+            </div>
+          </div>
+        </div>
+      }
 
     </div>
 

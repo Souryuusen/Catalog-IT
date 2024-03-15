@@ -1,3 +1,4 @@
+import { AuthService } from './../../auth/Services/auth.service';
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { OnInit } from '@angular/core';
@@ -8,6 +9,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-navigation-bar',
   standalone: true,
   imports: [RouterModule, CommonModule],
+  providers: [AuthService],
   template: `
     <section class="navigation-bar">
       <div clas="topnav">
@@ -21,19 +23,20 @@ import { CommonModule } from '@angular/common';
   `,
   styleUrl: './navigation-bar.component.css'
 })
-export class NavigationBarComponent {
+export class NavigationBarComponent implements OnInit{
 
   protected user: UserDTO = {username: "", email: "", userId: 0};
 
 
-  constructor(private router: Router) {
+  constructor(private authService: AuthService, private router: Router) {
 
   }
 
   ngOnInit() {
     this.router.events.subscribe((event) => {
       if(event.constructor.name == "NavigationEnd") {
-        sessionStorage['user'] ? this.user = sessionStorage['user'] : this.user = {username: "", email: "", userId: 0};
+        let userData =  this.authService.isUserLoggedIn() ? sessionStorage['user'] : {username: "", email: "", userId: 0};
+        this.user = userData;
       }
     });
   }

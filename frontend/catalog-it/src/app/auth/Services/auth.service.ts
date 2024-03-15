@@ -20,4 +20,8 @@ export class AuthService {
   public isInternalRequest(request: HttpRequest<any>): boolean {
     return request.urlWithParams.startsWith(this.INTERNAL_SERVER_URL);
   }
+
+  public isUserLoggedIn(): boolean {
+    return sessionStorage['user'] ? true : false;
+  }
 }
