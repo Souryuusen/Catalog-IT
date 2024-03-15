@@ -14,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authorization.AuthenticatedAuthorizationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
@@ -35,7 +36,8 @@ public class AuthController {
 
     @PostMapping(value = "/login", consumes = "application/json", produces = "application/json")
     public UserDTO authenticateUser(@RequestBody UserLoginDTO user) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.username(), user.password()));
+        var auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.username(), user.password()));
+        SecurityContextHolder.getContext().setAuthentication(auth);
         return userService.findUserByUsername(user.username()).convertToDTO();
     }
 
