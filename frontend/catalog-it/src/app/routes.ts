@@ -6,6 +6,7 @@ import { MovieListComponent } from "./components/movie-list/movie-list.component
 import { MovieDetailsComponent } from "./components/movie-details/movie-details.component";
 import { RegistrationFormComponent } from "./auth/Components/registration-form/registration-form.component";
 import { LoginFormComponent } from "./auth/Components/login-form/login-form.component";
+import { LogoutComponent } from "./auth/Components/logout/logout.component";
 
 const routeConfig: Routes = [
   {
@@ -42,6 +43,11 @@ const routeConfig: Routes = [
     path: "login",
     component: LoginFormComponent,
     title: "Log in"
+  },
+  {
+    path: "logout",
+    component: LogoutComponent,
+    title: "Log out"
   }
 ]
 

@@ -25,7 +25,7 @@ export class MovieService {
     var moviesURL = `http://localhost:8080/api/movie/movies`;
     return this.http.get<Movie[]>(moviesURL, {
       headers: {
-        Authorization: "Basic YWRtaW46YWRtaW4="
+
       },
       responseType: "json"
     });
@@ -35,7 +35,7 @@ export class MovieService {
     var moviesShortUrl = `http://localhost:8080/api/movie/movies/short`;
     return this.http.get<MovieShort[]>(moviesShortUrl, {
       headers: {
-        Authorization: "Basic YWRtaW46YWRtaW4="
+
       },
       responseType: "json"
     });
@@ -45,7 +45,7 @@ export class MovieService {
     var movieUrl = "http://localhost:8080/api/movie/movies/" + id;
     return this.http.get<Movie>(movieUrl, {
       headers: {
-        Authorization: "Basic YWRtaW46YWRtaW4="
+
       },
       responseType: "json"
     });

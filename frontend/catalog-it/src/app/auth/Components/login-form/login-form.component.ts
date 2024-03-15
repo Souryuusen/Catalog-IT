@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { UserLoginDTO } from '../../../entities/user';
+import { UserDTO, UserLoginDTO } from '../../../entities/user';
 
 @Component({
   selector: 'app-login-form',
@@ -14,6 +14,8 @@ import { UserLoginDTO } from '../../../entities/user';
   styleUrl: './login-form.component.css'
 })
 export class LoginFormComponent {
+
+  protected invalidAttempt: boolean = false;
 
   loginForm = new FormGroup({
     username: new FormControl("login", [Validators.minLength(4), Validators.maxLength(32), Validators.nullValidator, Validators.required]),
@@ -28,11 +30,26 @@ export class LoginFormComponent {
     let user: UserLoginDTO = {
       username: this.loginForm.value.username!,
       password: this.loginForm.value.password!
-    }
+    };
+
     this.restService.authenticateUser(user).subscribe((loggedUser) => {
-      sessionStorage.setItem('user', JSON.stringify(loggedUser));
-      this.router.navigateByUrl("/");
+      this.validateLoggedUser(loggedUser);
+    }, (error) => {
+      this.displayErrorMessage(error);
     })
+  }
+
+  private validateLoggedUser(user: UserDTO) {
+    if(user.userId != 0) {
+      sessionStorage.setItem('user', JSON.stringify(user));
+      this.router.navigateByUrl("/");
+    } else {
+      console.log(user)
+    }
+  }
+
+  private displayErrorMessage(error?: Error) {
+    this.invalidAttempt = true;
   }
 
 }

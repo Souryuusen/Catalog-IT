@@ -13,11 +13,11 @@ import { HttpClientModule } from '@angular/common/http'
   `
     <main>
         <header class="brand-name">
-          <img class="brand-logo" src="./assets/logo.svg" alt="Logo" aria-hidden="true">
+          // <img class="brand-logo" src="./assets/logo.svg" alt="Logo" aria-hidden="true">
         </header>
         <app-navigation-bar></app-navigation-bar>
         <section class="content">
-        <router-outlet ></router-outlet>
+          <router-outlet ></router-outlet>
         </section>
     </main>
   `,

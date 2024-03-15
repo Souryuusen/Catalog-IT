@@ -9,22 +9,23 @@ import { HttpClient } from '@angular/common/http';
 export class RestService {
 
   private API: string = 'http://localhost:8080/api';
-  private token: string = "Basic YWRtaW46YWRtaW4=";
+
 
   private ENDPOINTS = new Map<string, string>([
-    ['AUTH_USER', `${this.API}/auth/user`],
+    ['AUTH_USER', `${this.API}/auth/login`],
     ['REGISTER_USER', `${this.API}/auth/register`]
   ]);
 
   constructor(private http: HttpClient) { }
 
   public authenticateUser(user: UserLoginDTO): Observable<UserDTO> {
-
+    console.log(user);
     return this.http.post<UserDTO>(this.getEndpoint('AUTH_USER'), {
-      user
+      username: user.username,
+      password: user.password
     }, {
       headers: {
-        Authorization: this.token,
+
       },
       responseType: "json"
     });
@@ -33,7 +34,7 @@ export class RestService {
   public registerUser(user: UserRegisterDTO) {
     return this.http.post<UserRegisterDTO>(this.getEndpoint('REGISTER_USER'), user, {
       headers: {
-        Authorization: this.token
+
       },
       responseType: "json"
     });
