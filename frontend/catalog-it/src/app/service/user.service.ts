@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { RestService } from './rest.service';
+import { Subject } from 'rxjs';
+import { UserDTO } from '../entities/user';
+import { Movie, MovieShort } from '../entities/movie';
 
 @Injectable({
   providedIn: 'root',
@@ -7,22 +10,20 @@ import { RestService } from './rest.service';
 
 export class UserService {
 
+
+  public isMovieAddedToWatchlist :Subject<boolean> = new Subject<boolean>();
+
   constructor(private restService: RestService) { }
 
-  /**
-   *
-   * @param username User's to authenticate username
-   * @param password User's to authenticate password
-   * @returns Authentication status
-   */
-  protected authenticateUser(username: string, password: string): boolean {
-    this.restService.authenticateUser(username, password).subscribe((user) => {
-      if(user.authToken !== "") {
-        return true;
+  public isMovieAddedToUserWatchlist(user: UserDTO, movie: Movie) {
+    this.restService.getMovieFromUserWatchlist(user, movie).subscribe((movieData) => {
+      if(movieData !== null) {
+        this.isMovieAddedToWatchlist.next(true);
       } else {
-        return false;
+        this.isMovieAddedToWatchlist.next(false);
       }
-    });
-    return false;
+    })
   }
+
+
 }
