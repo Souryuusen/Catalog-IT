@@ -51,6 +51,7 @@ public class User {
     )
     private Set<Movie> watchlistSet = new TreeSet<>();
 
+
     public UserDTO convertToDTO() {
         return new UserDTO(getUserId(), getUsername(), getEmail(), getRoles());
     }

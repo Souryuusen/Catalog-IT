@@ -72,6 +72,21 @@ public class UserService implements UserDetailsService {
         this.repository.save(user);
     }
 
+    public void removeMovieFromWatchList(User user, Movie movie) {
+        var userWatchlist = user.getWatchlistSet();
+        if(userWatchlist.contains(movie)) {
+            userWatchlist.remove(movie);
+            user.setWatchlistSet(userWatchlist);
+            this.repository.save(user);
+        } else {
+            //todo: Add Error handling for movie not found in collection exception
+        }
+    }
+
+    public void isMovieInWatchlist(User user, Movie movie) {
+        var userWatchlist = user.getWatchlistSet();
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var foundUser = findUserByUsername(username);

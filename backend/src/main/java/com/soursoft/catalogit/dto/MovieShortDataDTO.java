@@ -51,6 +51,10 @@ public class MovieShortDataDTO {
         setCover(data.getCoverUrlsSet().iterator().next());
     }
 
+    public static MovieShortDataDTO from(Movie movie) {
+        return new MovieShortDataDTO(movie);
+    }
+
     public long getMovieId() {
         return movieId;
     }

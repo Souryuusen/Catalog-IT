@@ -17,4 +17,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u.watchlistSet FROM User u where u.userId = ?1")
     Set<Movie> findWatchlistByUserId(Long userId);
+
 }

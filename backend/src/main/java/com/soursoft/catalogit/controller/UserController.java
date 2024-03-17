@@ -6,15 +6,14 @@ import com.soursoft.catalogit.entity.Movie;
 import com.soursoft.catalogit.exception.UserByIdNotFoundException;
 import com.soursoft.catalogit.service.MovieService;
 import com.soursoft.catalogit.service.UserService;
-import com.soursoft.catalogit.valueobject.requests.user.UserWatchlistAddMovieRequest;
+import com.soursoft.catalogit.valueobject.requests.user.UserWatchlistMovieRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,22 +34,49 @@ public class UserController {
     public ResponseEntity<Set<MovieShortDataDTO>> getUserWatchlist(@PathVariable Long userId) {
         Set<Movie> userWatchlist = this.userService.fetchUserWatchlist(userId);
         var result = userWatchlist.stream().map(movie -> new MovieShortDataDTO(movie)).collect(Collectors.toSet());
-        return new ResponseEntity<>(result, HttpStatus.FOUND);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping(value = "/users/{userId}/watchlist")
-    public ResponseEntity<Set<MovieDataDTO>> addMovieToUserWatchlist(@PathVariable Long userId,
-                                                                        @RequestBody UserWatchlistAddMovieRequest request) {
+    public ResponseEntity<MovieDataDTO> addMovieToUserWatchlist(@PathVariable Long userId,
+                                                                        @RequestBody UserWatchlistMovieRequest request) {
         var user = this.userService.findUserById(userId);
-        if(user != null && user.getUserId() == userId) {
-            var movie = movieService.findMovieById(request.getMovieId());
-            this.userService.addMovieToWatchlist(user, movie);
-            var userWatchlist = this.userService.fetchUserWatchlist(user.getUserId());
-            var mappedWatchlist = userWatchlist.stream().map((m) -> new MovieShortDataDTO(m)).collect(Collectors.toSet());
-            return new ResponseEntity(mappedWatchlist, HttpStatus.OK);
+        var movie = movieService.findMovieById(request.movieId());
+        this.userService.addMovieToWatchlist(user, movie);
+        return new ResponseEntity(movie.convertToShortDTO(), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/users/{userId}/watchlist")
+    public ResponseEntity<MovieDataDTO> removeMovieFromUserWatchlist(@PathVariable Long userId,
+                                                                        @RequestBody UserWatchlistMovieRequest request) {
+        var user = this.userService.findUserById(userId);
+        var movie = movieService.findMovieById(request.movieId());
+        this.userService.removeMovieFromWatchList(user, movie);
+        return new ResponseEntity(movie.convertToShortDTO(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/users/{userId}/watchlist/{movieId}")
+    public ResponseEntity<MovieShortDataDTO> getMovieFromUserWatchlistById(@PathVariable Long userId,
+                                                                        @PathVariable Long movieId) {
+        var user = this.userService.findUserById(userId);
+        var watchlist = user.getWatchlistSet();
+        Optional<Movie> foundOptional = watchlist.stream().filter(movie -> movie.getMovieId() == movieId).findFirst();
+        if(foundOptional.isPresent()) {
+            return  new ResponseEntity<>(foundOptional.get().convertToShortDTO(), HttpStatus.OK);
         } else {
-            throw new UserByIdNotFoundException("User with id " + request.getUserId() + " has not been found!");
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
     }
+
+    @DeleteMapping(value = "/users/{userId}/watchlist/{movieId}")
+    public ResponseEntity<MovieDataDTO> removeMovieFromUserWatchlistById(@PathVariable Long userId,
+                                                                     @PathVariable Long movieId) {
+        var user = this.userService.findUserById(userId);
+        var movie = movieService.findMovieById(movieId);
+        this.userService.removeMovieFromWatchList(user, movie);
+        return new ResponseEntity(movie.convertToShortDTO(), HttpStatus.OK);
+    }
+
+
 
 }

@@ -1,6 +1,7 @@
 package com.soursoft.catalogit.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.soursoft.catalogit.dto.MovieShortDataDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -258,6 +259,10 @@ public class Movie implements Comparable<Movie>{
                 ", stars=" + stars +
                 ", covers=" + covers +
                 '}';
+    }
+
+    public MovieShortDataDTO convertToShortDTO() {
+        return MovieShortDataDTO.from(this);
     }
 
     @Override

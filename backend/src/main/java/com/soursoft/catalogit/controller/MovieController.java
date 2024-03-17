@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -33,7 +34,8 @@ public class MovieController {
 
     @GetMapping("/movies/short")
     public List<MovieShortDataDTO> fetchAllMoviesShorData() {
-        return this.service.findAllMoviesShortData();
+        var movieList = this.service.findAllMovies();
+        return movieList.stream().map(m -> m.convertToShortDTO()).collect(Collectors.toList());
     }
 
     @GetMapping("/movies/{movieId}")
@@ -57,10 +59,10 @@ public class MovieController {
 
     @PostMapping(value = "/movies/scrape", consumes = "application/json", produces = "application/json")
     public Movie createMovieByScrapping(@RequestBody MovieScrapePostRequest request) {
-        if(this.service.verifyMovieExistsByIdentifier(request.getIdentifier())) {
+        if(this.service.verifyMovieExistsByIdentifier(request.identifier())) {
             throw new MovieAlreadyExistsException("Movie with provided identifier already exists!");
         } else {
-            MovieDataDTO movieDataDTO = imdbUtility.scrapeImdb(request.getIdentifier());
+            MovieDataDTO movieDataDTO = imdbUtility.scrapeImdb(request.identifier());
             Movie newMovie = this.service.createFromData(movieDataDTO);
             return this.service.save(newMovie);
         }

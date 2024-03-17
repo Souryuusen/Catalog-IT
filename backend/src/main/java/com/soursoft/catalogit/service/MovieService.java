@@ -40,7 +40,12 @@ public class MovieService {
     }
 
     public Movie findMovieById(Long id) {
-        return repository.findByMovieId(id);
+        var movie = this.repository.findByMovieId(id);
+        if(movie != null) {
+            return repository.findByMovieId(id);
+        } else {
+            throw new MovieNotFoundException("Cannot find movie by ID " + id);
+        }
     }
 
     public Movie findMovieByIdentifier(String identifier) {
@@ -53,11 +58,6 @@ public class MovieService {
 
     public List<Movie> findAllMovies() {
         return this.repository.findAll();
-    }
-
-    public List<MovieShortDataDTO> findAllMoviesShortData() {
-        var list = findAllMovies();
-        return list.stream().map(m -> new MovieShortDataDTO(m)).collect(Collectors.toList());
     }
 
     @Transactional
