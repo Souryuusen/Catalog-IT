@@ -51,6 +51,9 @@ public class User {
     )
     private Set<Movie> watchlistSet = new TreeSet<>();
 
+    @OneToMany(mappedBy = "watchlistId")
+    private Set<WatchlistEntity> userWatchlist = new TreeSet<>();
+
 
     public UserDTO convertToDTO() {
         return new UserDTO(getUserId(), getUsername(), getEmail(), getRoles());

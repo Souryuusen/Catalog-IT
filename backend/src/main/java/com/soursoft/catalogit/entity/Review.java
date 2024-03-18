@@ -4,6 +4,7 @@ import com.soursoft.catalogit.dto.ReviewDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 
 import java.util.Comparator;
 import java.util.Objects;
@@ -17,12 +18,12 @@ public class Review implements Comparable<Review> {
     @Column(name = "rev_id")
     private Long reviewId;
 
-    @Column(name = "rev_rating", nullable = false, length = 3)
+    @Column(name = "rev_rating", nullable = false)
     @Size(min = 0, max = 100, message = "Review rating should have value from range 0 - 100")
-    private int rating;
+    private Integer rating;
 
     @Column(name = "rev_body", nullable = false)
-    @Length(min = 10, max = 500, message = "Review body should have length from range 10 - 500 characters")
+    @Range(min = 10, max = 500, message = "Review body should have length from range 10 - 500 characters")
     private String reviewBody;
 
     public ReviewDTO convertToDTO() {
