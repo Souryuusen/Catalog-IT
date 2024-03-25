@@ -13,6 +13,8 @@ import java.util.Set;
 @Repository
 public interface WatchlistRepository extends JpaRepository<WatchlistElement, Long> {
 
+    Optional<WatchlistElement> findByWatchlistId(Long watchlistId);
+
     Optional<Set<WatchlistElement>> findAllByOwner(User user);
 
     @Query("SELECT element FROM WatchlistElement element WHERE element.owner = ?1 AND element.reviewedEntity = ?2")

@@ -19,9 +19,38 @@ public class WatchlistService {
 
     private WatchlistRepository repository;
 
+    private UserService userService;
+    private MovieService movieService;
+
     @Autowired
-    public WatchlistService(WatchlistRepository repository) {
+    public WatchlistService(WatchlistRepository repository, UserService userService, MovieService movieService) {
         this.repository = repository;
+
+        this.userService = userService;
+        this.movieService = movieService;
+    }
+
+    public WatchlistElement getWatchlistElementById(Long elementId) {
+        Optional<WatchlistElement> optionalElement = this.repository.findByWatchlistId(elementId);
+
+        if(optionalElement.isPresent()) {
+            return optionalElement.get();
+        } else {
+            throw new WatchlistElementNotFoundException(String.format("Watchlist element by ID: %d not found!", elementId));
+        }
+    }
+
+    public WatchlistElement getWatchlistElementByUserIdAndMovieId(Long userId, Long movieId) {
+        User user = this.userService.findUserById(userId);
+        Movie movie = this.movieService.findMovieById(movieId);
+        Optional<WatchlistElement> optionalElement = this.getWatchlistElementByUserAndMovie(user, movie);
+
+        if(optionalElement.isPresent()) {
+            WatchlistElement foundElement = optionalElement.get();
+            return foundElement;
+        } else {
+            throw new WatchlistElementNotFoundException(user, movie);
+        }
     }
 
     public Set<WatchlistElement> getUserWatchlist(User user) {
