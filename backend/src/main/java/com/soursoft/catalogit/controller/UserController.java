@@ -2,6 +2,7 @@ package com.soursoft.catalogit.controller;
 
 import com.soursoft.catalogit.dto.MovieDataDTO;
 import com.soursoft.catalogit.dto.MovieShortDataDTO;
+import com.soursoft.catalogit.dto.WatchlistElementDTO;
 import com.soursoft.catalogit.entity.Movie;
 import com.soursoft.catalogit.entity.User;
 import com.soursoft.catalogit.entity.WatchlistElement;
@@ -56,13 +57,14 @@ public class UserController {
     }
 
     @GetMapping(value = "/users/{userId}/watchlista")
-    public ResponseEntity<WatchlistElement> addMovieToUserWatchlista(@PathVariable Long userId,
-                                                                @RequestBody UserWatchlistMovieRequest request) {
+    public ResponseEntity<Set<WatchlistElementDTO>> addMovieToUserWatchlista(@PathVariable Long userId,
+                                                                        @RequestBody UserWatchlistMovieRequest request) {
         var user = this.userService.findUserById(userId);
         var movie = movieService.findMovieById(request.movieId());
-        var a = this.watchlistService.getWatchlistElementByUserAndMovie(user, movie);
-        System.out.println("TRALALALALALALAALLALALA");
-        System.out.println(a);
+        var a = this.watchlistService.getUserWatchlist(user)
+                .stream()
+                .map(we -> WatchlistElementDTO.from(we))
+                .collect(Collectors.toSet());
         return new ResponseEntity(a, HttpStatus.OK);
     }
 
