@@ -61,7 +61,7 @@ public class UserController {
             WatchlistElement newElement = this.watchlistService.createNewWatchlistElementForUser(user, movie);
             user = this.userService.addWatchlistElementToUser(user, newElement);
             Set<WatchlistElementDTO> userWatchlist = this.watchlistService.getUserWatchlistDTO(user);
-            return new ResponseEntity(userWatchlist, HttpStatus.OK);
+            return new ResponseEntity(userWatchlist, HttpStatus.CREATED);
         }
     }
 

@@ -8,6 +8,8 @@ import com.soursoft.catalogit.service.MovieService;
 import com.soursoft.catalogit.utility.ImdbUtility;
 import com.soursoft.catalogit.valueobject.requests.MovieScrapePostRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,11 +46,12 @@ public class MovieController {
     }
 
     @PostMapping(value = "/movies", consumes = "application/json", produces = "application/json")
-    public Movie createNewMovie(@RequestBody Movie movie) {
+    public ResponseEntity<Movie> createNewMovie(@RequestBody Movie movie) {
         if(this.service.verifyMovieExistsByIdentifier(movie.getMovieIdentifier())) {
             throw new MovieAlreadyExistsException("Movie with provided identifier already exists!");
         } else {
-            return this.service.save(movie);
+            Movie createdMovie = this.service.save(movie);
+            return new ResponseEntity<>(createdMovie, HttpStatus.CREATED);
         }
     }
 
@@ -58,13 +61,14 @@ public class MovieController {
     }
 
     @PostMapping(value = "/movies/scrape", consumes = "application/json", produces = "application/json")
-    public Movie createMovieByScrapping(@RequestBody MovieScrapePostRequest request) {
+    public ResponseEntity<Movie> createMovieByScrapping(@RequestBody MovieScrapePostRequest request) {
         if(this.service.verifyMovieExistsByIdentifier(request.identifier())) {
             throw new MovieAlreadyExistsException("Movie with provided identifier already exists!");
         } else {
             MovieDataDTO movieDataDTO = imdbUtility.scrapeImdb(request.identifier());
             Movie newMovie = this.service.createFromData(movieDataDTO);
-            return this.service.save(newMovie);
+            newMovie = this.service.save(newMovie);
+            return new ResponseEntity<>(newMovie, HttpStatus.CREATED);
         }
     }
 }
