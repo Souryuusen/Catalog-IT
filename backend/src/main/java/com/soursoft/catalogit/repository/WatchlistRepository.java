@@ -15,11 +15,7 @@ public interface WatchlistRepository extends JpaRepository<WatchlistElement, Lon
 
     Optional<Set<WatchlistElement>> findAllByOwner(User user);
 
-    @Query("""
-            SELECT we FROM WatchlistElement we
-            WHERE we.owner.userId = ?#{[0].userId} AND
-                we.reviewedEntity.movieId = ?#{[1].movieId}
-            """)
-    WatchlistElement findElementByUserAndMovie(User user, Movie movie);
+    @Query("SELECT element FROM WatchlistElement element WHERE element.owner = ?1 AND element.reviewedEntity = ?2")
+    Optional<WatchlistElement> findElementByUserAndMovie(User user, Movie movie);
 
 }

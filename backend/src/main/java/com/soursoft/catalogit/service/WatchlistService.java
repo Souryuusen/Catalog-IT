@@ -1,5 +1,6 @@
 package com.soursoft.catalogit.service;
 
+import com.soursoft.catalogit.dto.WatchlistElementDTO;
 import com.soursoft.catalogit.entity.Movie;
 import com.soursoft.catalogit.entity.User;
 import com.soursoft.catalogit.entity.WatchlistElement;
@@ -9,6 +10,7 @@ import com.soursoft.catalogit.repository.WatchlistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,29 +33,25 @@ public class WatchlistService {
         }
     }
 
-    public WatchlistElement getWatchlistElementByUserAndMovie(User user, Movie movie) {
-//        Set<WatchlistElement> userWatchlist = user.getUserWatchlist();
-//        var elementOptional = userWatchlist.stream().filter(we -> {
-//            we.getReviewedEntity().getMovieIdentifier().equalsIgnoreCase(movie.getMovieIdentifier());
-//            var elementMovie = we.getReviewedEntity();
-//            return movie.getMovieIdentifier().equalsIgnoreCase(elementMovie.getMovieIdentifier());
-//        }).findFirst();
-//        if(elementOptional.isPresent()) {
-//            return elementOptional.get();
-//        } else {
-//            throw new WatchlistElementNotFoundException("Not Watchlist Element Found For Movie With ID + "
-//                                                            + movie.getMovieId() + " And User ID " + user.getUserId());
-//        }
+    public WatchlistElement createNewWatchlistElementForUser(User user, Movie movie){
+        return this.save(WatchlistElement.from(user, movie));
+    }
+
+    public Set<WatchlistElementDTO> getUserWatchlistDTO(User user) {
+        Set<WatchlistElement> userWatchlist = this.getUserWatchlist(user);
+
+        Set<WatchlistElementDTO> result = userWatchlist.stream()
+                .map(element -> WatchlistElementDTO.from(element))
+                .collect(Collectors.toSet());
+        return result;
+    }
+
+    public Optional<WatchlistElement> getWatchlistElementByUserAndMovie(User user, Movie movie) {
         return this.repository.findElementByUserAndMovie(user, movie);
     }
 
     public WatchlistElement save(WatchlistElement element) {
         return this.repository.save(element);
-    }
-
-    public void addMovieToUserWatchlist(User user, Movie movie){
-        var newWatchlistItem = this.save(WatchlistElement.from(user, movie));
-        user.addElementToTheWatchlist(newWatchlistItem);
     }
 
 

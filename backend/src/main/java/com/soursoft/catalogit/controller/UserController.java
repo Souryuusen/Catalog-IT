@@ -7,6 +7,8 @@ import com.soursoft.catalogit.entity.Movie;
 import com.soursoft.catalogit.entity.User;
 import com.soursoft.catalogit.entity.WatchlistElement;
 import com.soursoft.catalogit.exception.UserByIdNotFoundException;
+import com.soursoft.catalogit.exception.WatchlistElementAlreadyExistsException;
+import com.soursoft.catalogit.exception.WatchlistElementNotFoundException;
 import com.soursoft.catalogit.service.MovieService;
 import com.soursoft.catalogit.service.UserService;
 import com.soursoft.catalogit.service.WatchlistService;
@@ -38,69 +40,76 @@ public class UserController {
     }
 
     @GetMapping(value = "/users/{userId}/watchlist")
-    public ResponseEntity<Set<MovieShortDataDTO>> getUserWatchlist(@PathVariable Long userId) {
+    public ResponseEntity<Set<WatchlistElementDTO>> getUserWatchlist(@PathVariable Long userId) {
         User user = userService.findUserById(userId);
         Set<WatchlistElement> userWatchlist = this.watchlistService.getUserWatchlist(user);
         var result = userWatchlist.stream()
-                    .map(element -> new MovieShortDataDTO(element.getReviewedEntity()))
+                    .map(element ->  WatchlistElementDTO.from(element))
                     .collect(Collectors.toSet());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping(value = "/users/{userId}/watchlist")
-    public ResponseEntity<MovieDataDTO> addMovieToUserWatchlist(@PathVariable Long userId,
+    public ResponseEntity<Set<WatchlistElementDTO>> addMovieToUserWatchlist(@PathVariable Long userId,
                                                                         @RequestBody UserWatchlistMovieRequest request) {
-        var user = this.userService.findUserById(userId);
-        var movie = movieService.findMovieById(request.movieId());
-        this.watchlistService.addMovieToUserWatchlist(user, movie);
-        return new ResponseEntity(movie.convertToShortDTO(), HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/users/{userId}/watchlista")
-    public ResponseEntity<Set<WatchlistElementDTO>> addMovieToUserWatchlista(@PathVariable Long userId,
-                                                                        @RequestBody UserWatchlistMovieRequest request) {
-        var user = this.userService.findUserById(userId);
-        var movie = movieService.findMovieById(request.movieId());
-        var a = this.watchlistService.getUserWatchlist(user)
-                .stream()
-                .map(we -> WatchlistElementDTO.from(we))
-                .collect(Collectors.toSet());
-        return new ResponseEntity(a, HttpStatus.OK);
+        User user = this.userService.findUserById(userId);
+        Movie movie = this.movieService.findMovieById(request.movieId());
+        Optional<WatchlistElement> existingElement = this.watchlistService.getWatchlistElementByUserAndMovie(user, movie);
+        if(existingElement.isPresent()) {
+            throw new WatchlistElementAlreadyExistsException(user, movie);
+        } else {
+            WatchlistElement newElement = this.watchlistService.createNewWatchlistElementForUser(user, movie);
+            user = this.userService.addWatchlistElementToUser(user, newElement);
+            Set<WatchlistElementDTO> userWatchlist = this.watchlistService.getUserWatchlistDTO(user);
+            return new ResponseEntity(userWatchlist, HttpStatus.OK);
+        }
     }
 
     @DeleteMapping(value = "/users/{userId}/watchlist")
-    public ResponseEntity<MovieDataDTO> removeMovieFromUserWatchlist(@PathVariable Long userId,
+    public ResponseEntity<WatchlistElementDTO> removeMovieFromUserWatchlist(@PathVariable Long userId,
                                                                         @RequestBody UserWatchlistMovieRequest request) {
-        var user = this.userService.findUserById(userId);
-        var movie = movieService.findMovieById(request.movieId());
-//        this.watchlistService.removeMovieFromUserWatchlist(user, movie);
-//        this.userService.remove(user, movie);
-        return new ResponseEntity(movie.convertToShortDTO(), HttpStatus.OK);
+        User user = this.userService.findUserById(userId);
+        Movie movie = this.movieService.findMovieById(request.movieId());
+        Optional<WatchlistElement> existingElement = this.watchlistService.getWatchlistElementByUserAndMovie(user, movie);
+
+        if(existingElement.isPresent()) {
+            WatchlistElement element = existingElement.get();
+            user = this.userService.removeWatchlistElementFromUser(user, element);
+            return new ResponseEntity(WatchlistElementDTO.from(element), HttpStatus.OK);
+        } else {
+            throw new WatchlistElementNotFoundException(user, movie);
+        }
     }
 
     @GetMapping(value = "/users/{userId}/watchlist/{movieId}")
-    public ResponseEntity<MovieShortDataDTO> getMovieFromUserWatchlistById(@PathVariable Long userId,
+    public ResponseEntity<WatchlistElementDTO> getMovieFromUserWatchlistById(@PathVariable Long userId,
                                                                         @PathVariable Long movieId) {
-        var user = this.userService.findUserById(userId);
-        var movie = this.movieService.findMovieById(movieId);
-//        //var watchlist = user.getWatchlistSet();
-//        //Optional<Movie> foundOptional = watchlist.stream().filter(movie -> movie.getMovieId() == movieId).findFirst();
-//        var foundOptional = this.watchlistService.getWatchlistElementByUserAndMovie(user, movie);
-////        if(foundOptional.isPresent()) {
-//            return  new ResponseEntity<>(foundOptional.get().convertToShortDTO(), HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-//        }
-        return null;
+        User user = this.userService.findUserById(userId);
+        Movie movie = this.movieService.findMovieById(movieId);
+        Optional<WatchlistElement> optionalElement = this.watchlistService.getWatchlistElementByUserAndMovie(user, movie);
+
+        if(optionalElement.isPresent()) {
+            WatchlistElement foundElement = optionalElement.get();
+            return new ResponseEntity<>(WatchlistElementDTO.from(foundElement), HttpStatus.OK);
+        } else {
+            throw new WatchlistElementNotFoundException(user, movie);
+        }
     }
 
     @DeleteMapping(value = "/users/{userId}/watchlist/{movieId}")
     public ResponseEntity<MovieDataDTO> removeMovieFromUserWatchlistById(@PathVariable Long userId,
                                                                      @PathVariable Long movieId) {
-        var user = this.userService.findUserById(userId);
-        var movie = movieService.findMovieById(movieId);
-//        this.userService.removeMovieFromWatchList(user, movie);
-        return new ResponseEntity(movie.convertToShortDTO(), HttpStatus.OK);
+        User user = this.userService.findUserById(userId);
+        Movie movie = this.movieService.findMovieById(movieId);
+        Optional<WatchlistElement> existingElement = this.watchlistService.getWatchlistElementByUserAndMovie(user, movie);
+
+        if(existingElement.isPresent()) {
+            WatchlistElement element = existingElement.get();
+            user = this.userService.removeWatchlistElementFromUser(user, element);
+            return new ResponseEntity(WatchlistElementDTO.from(element), HttpStatus.OK);
+        } else {
+            throw new WatchlistElementNotFoundException(user, movie);
+        }
     }
 
 

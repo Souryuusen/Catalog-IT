@@ -3,19 +3,20 @@ package com.soursoft.catalogit.exception;
 import com.soursoft.catalogit.entity.Movie;
 import com.soursoft.catalogit.entity.User;
 
-public class WatchlistElementNotFoundException extends RuntimeException{
+public class WatchlistElementAlreadyExistsException extends RuntimeException{
 
-    public WatchlistElementNotFoundException(String message) {
+    public WatchlistElementAlreadyExistsException(String message) {
         super(message);
     }
 
-    public WatchlistElementNotFoundException(User user, Movie movie) {
+    public WatchlistElementAlreadyExistsException(User user, Movie movie) {
         this(
                 String.format(
-                        "Watchlist element with User ID: %d and Movie ID: %d does not exists!",
+                        "Watchlist element with User ID: %d and Movie ID: %d already exists!",
                         user.getUserId(),
                         movie.getMovieId()
                 )
         );
     }
+
 }

@@ -64,6 +64,16 @@ public class UserService implements UserDetailsService {
         return this.repository.save(userToRegister);
     }
 
+    public User addWatchlistElementToUser(User user, WatchlistElement element) {
+        user.addElementToTheWatchlist(element);
+        return this.repository.save(user);
+    }
+
+    public User removeWatchlistElementFromUser(User user, WatchlistElement element) {
+        user.removeElementFromTheWatchlist(element);
+        return this.repository.save(user);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var foundUser = findUserByUsername(username);

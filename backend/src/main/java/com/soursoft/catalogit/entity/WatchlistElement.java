@@ -6,10 +6,13 @@ import jakarta.persistence.*;
 import org.hibernate.validator.constraints.Range;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "user_watchlist")
+@Table(name = "user_watchlist", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"w_owner_id", "w_movie_id"})
+})
 public class WatchlistElement {
 
     @Id
@@ -114,5 +117,18 @@ public class WatchlistElement {
         } else {
             //todo: Add Exception for ReviewNotFound
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WatchlistElement that = (WatchlistElement) o;
+        return Objects.equals(getOwner(), that.getOwner()) && Objects.equals(getReviewedEntity(), that.getReviewedEntity());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getOwner(), getReviewedEntity());
     }
 }
