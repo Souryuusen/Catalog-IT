@@ -6,6 +6,7 @@ import com.soursoft.catalogit.dto.UserRegisterDTO;
 import com.soursoft.catalogit.entity.Movie;
 import com.soursoft.catalogit.entity.Role;
 import com.soursoft.catalogit.entity.User;
+import com.soursoft.catalogit.entity.WatchlistElement;
 import com.soursoft.catalogit.exception.UserByIdNotFoundException;
 import com.soursoft.catalogit.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,30 +62,6 @@ public class UserService implements UserDetailsService {
         userToRegister.setEmail(userData.email());
         userToRegister.setPassword(passwordEncoder.encode(userData.password()));
         return this.repository.save(userToRegister);
-    }
-
-    public Set<Movie> fetchUserWatchlist(Long userId) {
-        return this.repository.findWatchlistByUserId(userId);
-    }
-
-    public void addMovieToWatchlist(User user, Movie movie) {
-        user.addMovieToWatchlist(movie);
-        this.repository.save(user);
-    }
-
-    public void removeMovieFromWatchList(User user, Movie movie) {
-        var userWatchlist = user.getWatchlistSet();
-        if(userWatchlist.contains(movie)) {
-            userWatchlist.remove(movie);
-            user.setWatchlistSet(userWatchlist);
-            this.repository.save(user);
-        } else {
-            //todo: Add Error handling for movie not found in collection exception
-        }
-    }
-
-    public void isMovieInWatchlist(User user, Movie movie) {
-        var userWatchlist = user.getWatchlistSet();
     }
 
     @Override

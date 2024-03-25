@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsernameIgnoreCase(String username);
     User findByEmailIgnoreCase(String email);
 
-    @Query("SELECT u.watchlistSet FROM User u where u.userId = ?1")
-    Set<Movie> findWatchlistByUserId(Long userId);
+//    @Query("SELECT u.watchlistSet FROM User u where u.userId = ?1")
+//    Set<Movie> findWatchlistByUserId(Long userId);
 
 }

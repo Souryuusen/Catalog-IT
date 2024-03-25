@@ -1,7 +1,7 @@
 package com.soursoft.catalogit.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.soursoft.catalogit.dto.UserDTO;
-import com.soursoft.catalogit.dto.UserRegisterDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -36,6 +36,7 @@ public class User {
     private boolean active;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "uid"),
@@ -43,16 +44,17 @@ public class User {
     )
     private Set<Role> roles;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "user_watchlist",
-            joinColumns = @JoinColumn(name = "uid"),
-            inverseJoinColumns = @JoinColumn(name = "movie_id")
-    )
-    private Set<Movie> watchlistSet = new TreeSet<>();
+//    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @JoinTable(
+//            name = "user_watchlist",
+//            joinColumns = @JoinColumn(name = "uid"),
+//            inverseJoinColumns = @JoinColumn(name = "movie_id")
+//    )
+//    private Set<Movie> watchlistSet = new TreeSet<>();
 
     @OneToMany(mappedBy = "watchlistId")
-    private Set<WatchlistEntity> userWatchlist = new TreeSet<>();
+    @JsonManagedReference
+    private Set<WatchlistElement> userWatchlist = new TreeSet<>();
 
 
     public UserDTO convertToDTO() {
@@ -129,20 +131,37 @@ public class User {
         }
     }
 
-    public Set<Movie> getWatchlistSet() {
-        return watchlistSet;
+    public Set<WatchlistElement> getUserWatchlist() {
+        return userWatchlist;
     }
 
-    public void setWatchlistSet(Set<Movie> watchlistSet) {
-        this.watchlistSet = watchlistSet;
+    public void setUserWatchlist(Set<WatchlistElement> userWatchlist) {
+        this.userWatchlist = userWatchlist;
     }
 
-    public void addMovieToWatchlist(Movie movie) {
-        this.watchlistSet.add(movie);
+    public void addElementToTheWatchlist(WatchlistElement element) {
+
     }
 
-    public void removeMovieFromWatchlist(Movie movie) {
-        this.watchlistSet.remove(movie);
+    public void removeElementFromTheWatchlist(WatchlistElement element) {
+
     }
+
+    //
+//    public Set<Movie> getWatchlistSet() {
+//        return watchlistSet;
+//    }
+//
+//    public void setWatchlistSet(Set<Movie> watchlistSet) {
+//        this.watchlistSet = watchlistSet;
+//    }
+//
+//    public void addMovieToWatchlist(Movie movie) {
+//        this.watchlistSet.add(movie);
+//    }
+//
+//    public void removeMovieFromWatchlist(Movie movie) {
+//        this.watchlistSet.remove(movie);
+//    }
 }
 

@@ -1,5 +1,6 @@
 package com.soursoft.catalogit.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -17,6 +18,7 @@ public class Role {
     private String roleName;
 
     @ManyToMany(mappedBy = "roles")
+    @JsonBackReference
     private Set<User> roleUsers;
 
     public Role() {}
