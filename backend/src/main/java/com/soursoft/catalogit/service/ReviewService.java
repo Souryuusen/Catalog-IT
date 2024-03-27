@@ -1,10 +1,12 @@
 package com.soursoft.catalogit.service;
 
 import com.soursoft.catalogit.entity.Review;
+import com.soursoft.catalogit.exception.BlankReviewException;
 import com.soursoft.catalogit.exception.ReviewNotFoundException;
 import com.soursoft.catalogit.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -24,6 +26,15 @@ public class ReviewService {
             return optionalReview.get();
         } else {
             throw new ReviewNotFoundException(String.format("Review by ID: %d has not been found", reviewId));
+        }
+    }
+
+    @Transactional
+    public Review save(Review review) {
+        if(review.getRating() > 0 && review.getReviewBody().trim().length() > 0) {
+            return this.repository.save(review);
+        } else {
+            throw new BlankReviewException("Review Cannot Be Blank!");
         }
     }
 

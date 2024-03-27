@@ -11,6 +11,7 @@ import com.soursoft.catalogit.service.MovieService;
 import com.soursoft.catalogit.service.ReviewService;
 import com.soursoft.catalogit.service.UserService;
 import com.soursoft.catalogit.service.WatchlistService;
+import com.soursoft.catalogit.valueobject.requests.ReviewPostRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,6 +66,21 @@ public class WatchlistController {
         return new ResponseEntity(WatchlistElementDTO.from(foundElement), HttpStatus.OK);
     }
 
+    @PostMapping(
+            value = "/watchlists/{userId}/movies/{movieId}/reviews",
+            consumes = "application/json",
+            produces = "application/json"
+    )
+    public ResponseEntity<WatchlistElementDTO> addReviewByUserIdAndMovieId(@PathVariable Long userId,
+                                                                           @PathVariable Long movieId,
+                                                                           @RequestBody ReviewPostRequest request) {
+        WatchlistElement foundElement = this.watchlistService.getWatchlistElementByUserIdAndMovieId(userId, movieId);
+        Review newReview = new Review(request.rating(), request.reviewBody());
+        WatchlistElementDTO updatedElement = this.watchlistService.addReviewToWatchlistElement(foundElement, newReview);
+
+        return new ResponseEntity<>(updatedElement, HttpStatus.CREATED);
+    }
+
     @GetMapping(value = "/watchlists/elements/{elementId}")
     public ResponseEntity<WatchlistElementDTO> getWatchlistElementById(@PathVariable Long elementId) {
         WatchlistElement foundElement = this.watchlistService.getWatchlistElementById(elementId);
@@ -78,6 +94,18 @@ public class WatchlistController {
                 .map(r -> ReviewDTO.from(r))
                 .collect(Collectors.toSet());
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping(
+            value = "/watchlist/elements/{elementId}/reviews",
+            consumes = "application/json",
+            produces = "application/json")
+    public ResponseEntity<WatchlistElementDTO> postReviewToElementById(@PathVariable Long elementId,
+                                                                @RequestBody ReviewPostRequest request) {
+        WatchlistElement foundElement = this.watchlistService.getWatchlistElementById(elementId);
+        Review newReview = new Review(request.rating(), request.reviewBody());
+        WatchlistElementDTO updatedElement = this.watchlistService.addReviewToWatchlistElement(foundElement, newReview);
+        return new ResponseEntity<>(updatedElement, HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/watchlists/elements/{elementId}/reviews/{reviewId}")

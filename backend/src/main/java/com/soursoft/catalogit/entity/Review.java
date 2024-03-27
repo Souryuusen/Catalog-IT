@@ -19,12 +19,27 @@ public class Review implements Comparable<Review> {
     private Long reviewId;
 
     @Column(name = "rev_rating", nullable = false)
-    @Size(min = 0, max = 100, message = "Review rating should have value from range 0 - 100")
+    @Range(min = 0, max = 100, message = "Review rating should have value from range 0 - 100")
     private Integer rating;
 
     @Column(name = "rev_body", nullable = false)
-    @Range(min = 10, max = 500, message = "Review body should have length from range 10 - 500 characters")
+    @Size(min = 1, max = 500, message = "Review body should have length from range 10 - 500 characters")
     private String reviewBody;
+
+    public Review() {
+
+    }
+
+    public Review(Integer rating, String reviewBody) {
+        this.rating = rating;
+        this.reviewBody = reviewBody;
+    }
+
+    public Review(Long reviewId, Integer rating, String reviewBody) {
+        this.reviewId = reviewId;
+        this.rating = rating;
+        this.reviewBody = reviewBody;
+    }
 
     public ReviewDTO convertToDTO() {
         return new ReviewDTO(this.reviewId, this.rating, this.reviewBody);

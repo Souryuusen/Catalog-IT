@@ -47,7 +47,8 @@ public class SecurityConfig {
                           .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
                           .requestMatchers(new AntPathRequestMatcher("/api/auth/login")).permitAll()
                           .requestMatchers(new AntPathRequestMatcher("/api/movie/**")).authenticated()
-                          .requestMatchers(new AntPathRequestMatcher("/api/user/**")).authenticated();
+                          .requestMatchers(new AntPathRequestMatcher("/api/user/**")).authenticated()
+                          .requestMatchers(new AntPathRequestMatcher("/api/watchlist/**")).authenticated();
                 })
                 .httpBasic(Customizer.withDefaults());
         return http.build();

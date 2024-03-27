@@ -1,7 +1,9 @@
 package com.soursoft.catalogit.service;
 
+import com.soursoft.catalogit.dto.ReviewDTO;
 import com.soursoft.catalogit.dto.WatchlistElementDTO;
 import com.soursoft.catalogit.entity.Movie;
+import com.soursoft.catalogit.entity.Review;
 import com.soursoft.catalogit.entity.User;
 import com.soursoft.catalogit.entity.WatchlistElement;
 import com.soursoft.catalogit.exception.WatchlistElementNotFoundException;
@@ -9,6 +11,7 @@ import com.soursoft.catalogit.exception.WatchlistNotFoundException;
 import com.soursoft.catalogit.repository.WatchlistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.Set;
@@ -21,13 +24,16 @@ public class WatchlistService {
 
     private UserService userService;
     private MovieService movieService;
+    private ReviewService reviewService;
 
     @Autowired
-    public WatchlistService(WatchlistRepository repository, UserService userService, MovieService movieService) {
+    public WatchlistService(WatchlistRepository repository, UserService userService,
+                                MovieService movieService, ReviewService reviewService) {
         this.repository = repository;
 
         this.userService = userService;
         this.movieService = movieService;
+        this.reviewService = reviewService;
     }
 
     public WatchlistElement getWatchlistElementById(Long elementId) {
@@ -62,6 +68,7 @@ public class WatchlistService {
         }
     }
 
+    @Transactional
     public WatchlistElement createNewWatchlistElementForUser(User user, Movie movie){
         return this.save(WatchlistElement.from(user, movie));
     }
@@ -77,6 +84,14 @@ public class WatchlistService {
 
     public Optional<WatchlistElement> getWatchlistElementByUserAndMovie(User user, Movie movie) {
         return this.repository.findElementByUserAndMovie(user, movie);
+    }
+
+    @Transactional
+    public WatchlistElementDTO addReviewToWatchlistElement(WatchlistElement element, Review review) {
+        Review persistedReview = this.reviewService.save(review);
+        element.addReview(review);
+        WatchlistElement updatedElement = this.repository.save(element);
+        return WatchlistElementDTO.from(updatedElement);
     }
 
     public WatchlistElement save(WatchlistElement element) {
