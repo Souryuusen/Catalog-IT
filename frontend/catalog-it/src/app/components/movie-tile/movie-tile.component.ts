@@ -1,13 +1,17 @@
+import { WatchlistService } from './../../service/watchlist.service';
 import { routes } from './../../app.routes';
 import { MovieShort } from './../../entities/movie';
 import { Component, Input } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { OnInit } from '@angular/core';
+import { MovieService } from '../../service/movie.service';
+import { UserDTO } from '../../entities/user';
 
 @Component({
   selector: 'app-movie-tile',
   standalone: true,
   imports: [RouterModule],
+  providers: [WatchlistService, MovieService],
   template: `
     <section class="movie-container">
       <h5 class="movie-heading">{{movie.title}}</h5>
@@ -23,12 +27,21 @@ import { OnInit } from '@angular/core';
 export class MovieTileComponent{
   @Input() movie!: MovieShort;
 
-  constructor(private router: Router){
+  user: UserDTO;
 
+  constructor(private router: Router, private movieService: MovieService, private watchlistService: WatchlistService){
+    this.user = JSON.parse(sessionStorage['user']);
   }
 
   protected navigateToMovieDetails(ms: MovieShort) {
-    this.router.navigate(["movie/", ms.movieId]);
+    this.movieService.fetchMovieById(ms.movieId.toString())?.subscribe((movie) => {
+      this.watchlistService.getWatchlistElementByMovieAndUser(this.user, movie).subscribe((element) => {
+        this.router.navigate(["movie/", ms.movieId], {state: {
+          movie: movie,
+          watchlistElement: element
+        }});
+      });
+    });
   }
 
 }

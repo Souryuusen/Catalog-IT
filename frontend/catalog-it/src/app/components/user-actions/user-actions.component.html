@@ -1,9 +1,14 @@
 <div class="user-actions-container">
   <div class="user-actions-button-container">
-    <button (click)="addToWatchlist()" *ngIf="this.watchlistElement === undefined"><strong>👁 </strong>Add to watchlist</button>
-    <button (click)="removeFromWatchlist()" *ngIf="this.watchlistElement !== undefined"><strong>👁 </strong>Remove from watchlist</button>
-    <button *ngIf="this.watchlistElement !== undefined">Mark as already seen</button>
-    <button *ngIf="this.watchlistElement !== undefined">Add new review</button>
+    <!-- @if (this.isLoaded) { -->
+      @if ((this.currentWatchlistElement$| async) === undefined) {
+        <button (click)="addToWatchlist()"><strong>👁 </strong>Add to watchlist</button>
+      } @else {
+        <button (click)="removeFromWatchlist()"><strong>👁 </strong>Remove from watchlist</button>
+        <button >Mark as already seen</button>
+        <button >Add new review</button>
+      }
+    <!-- } -->
   </div>
   <div>
     <span>Average rating: #.#</span>

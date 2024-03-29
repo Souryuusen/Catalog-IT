@@ -8,7 +8,7 @@ import { GenreService } from './../../service/genre.service';
 import { CommonModule } from '@angular/common';
 import { MovieService } from './../../service/movie.service';
 import { Component } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { OnInit } from '@angular/core';
 import { ActorService } from '../../service/actor.service';
 import MovieData from '../../entities/movie-data';
@@ -55,8 +55,14 @@ export class MovieDetailsComponent implements OnInit {
   constructor(private movieService: MovieService, private genreService: GenreService,
                 private directorService: DirectorService, private writerService: WriterService,
                   private actorService: ActorService, private tagService: TagService, private authService: AuthService,
-                    private watchlistService: WatchlistService, private route: ActivatedRoute) {
+                    private watchlistService: WatchlistService, private route: ActivatedRoute, private router: Router) {
+    this.loaded = true;
     this.movieId = this.route.snapshot.params['id'];
+    const state = this.router.getCurrentNavigation()?.extras.state;
+    if(state) {
+      this.movie = state['movie'];
+      this.watchlistElement = state['watchlistElement']
+    }
   }
 
   ngOnInit(): void {
@@ -67,9 +73,12 @@ export class MovieDetailsComponent implements OnInit {
   }
 
   private fetchData() {
-    this.movieService.fetchMovieById(this.movieId)?.subscribe(movie => {
-      this.movie = movie;
-
+    // this.movieService.fetchMovieById(this.movieId)?.subscribe(movie => {
+    //   this.movie = movie;
+    if(this.watchlistElement) {
+      this.watchlistService.setWatchlistElement(this.watchlistElement);
+    }
+    if(this.movie) {
       this.genreString = this.genreService.joinGenresNames(this.movie.genres);
       this.directorString = this.directorService.joinDirectorsNames(this.movie.directors);
       this.writerString = this.writerService.joinWritersNames(this.movie.writers);
@@ -86,12 +95,15 @@ export class MovieDetailsComponent implements OnInit {
       this.movieData.push(new MovieData(`Keyword${this.movie.keywords.length > 1 ? "s:" : ":"}`, this.tagString));
 
       this.currentCover = this.movie.covers[this.currentCoverIndex];
+    }
 
-      this.watchlistService.getWatchlistElementByMovieAndUser(this.user, this.movie).subscribe((value) => {
-        this.watchlistElement = value;
-        this.loaded = true;
-      })
-    });
+    //   this.watchlistService.getWatchlistElementByMovieAndUser(this.user, this.movie).subscribe((value) => {
+    //     // this.watchlistElement = value;
+    //     // console.log(this.watchlistElement)
+    //     // this.watchlistService.setWatchlistElement(this.watchlistElement);
+    //     this.loaded = true;
+    //   })
+    // });
   }
 
   private fetchMovieById(id: string) {

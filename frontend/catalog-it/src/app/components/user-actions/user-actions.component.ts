@@ -6,6 +6,7 @@ import { Movie } from '../../entities/movie';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../service/user.service';
 import { WatchlistElement } from '../../entities/WatchlistElement';
+import { Observable, startWith, tap } from 'rxjs';
 
 @Component({
   selector: 'app-user-actions',
@@ -22,24 +23,22 @@ export class UserActionsComponent implements OnInit, OnDestroy{
   @Input() watchlistElement!: WatchlistElement | undefined;
 
   userWatchlist: WatchlistElement[] = [];
+  currentWatchlistElement$: Observable<WatchlistElement | undefined>;
 
   isOnUserWatchlist: boolean = false;
   isLoaded: boolean = false;
 
   constructor(protected restService: RestService, protected userService: UserService,
               protected watchlistService: WatchlistService) {
-
+                this.isLoaded = true;
+      this.currentWatchlistElement$ = this.watchlistService.watchlistElement$.pipe(
+        tap(value => console.log('Current Watchlist Element:', value))
+      );;
+      console.log(this.watchlistElement)
   }
 
   ngOnInit(): void {
-    // if(this.watchlistElement !== undefined) {
-    //   this.isOnUserWatchlist = true;
-    // }
-    this.watchlistService.watchlistElement$.subscribe((element) => {
-      this.watchlistElement = element;
-      this.isOnUserWatchlist = this.watchlistElement === undefined;
-      console.log(this.watchlistElement);
-    })
+    this.watchlistService.setWatchlistElement(this.watchlistElement);
   }
 
   ngOnDestroy(): void {

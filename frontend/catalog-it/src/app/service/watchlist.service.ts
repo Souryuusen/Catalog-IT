@@ -35,11 +35,15 @@ export class WatchlistService {
 
   public getWatchlistElementByMovieAndUser(user: UserDTO, movie: Movie) {
     return this.restService.getWatchlistElementByUserAndMovie(user, movie).pipe(map((watchlistElement) => {
-      // this.watchlistElementSubject.next(watchlistElement)
+      this.watchlistElementSubject.next(watchlistElement)
       return watchlistElement;
     }), catchError((error) => {
-      // this.watchlistElementSubject.next(undefined)
+      this.watchlistElementSubject.next(undefined)
       return of(undefined);
     }));
+  }
+
+  public setWatchlistElement(value: WatchlistElement | undefined) {
+    this.watchlistElementSubject.next(value);
   }
 }
