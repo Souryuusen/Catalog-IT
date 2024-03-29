@@ -10,7 +10,7 @@
       </app-movie-details-row>
 
       @if (this.userIsLogged) {
-        <app-user-actions [movie]="this.movie" [user]="this.user"></app-user-actions>
+        <app-user-actions [movie]="this.movie" [user]="this.user" [watchlistElement]="this.watchlistElement"></app-user-actions>
 
         <div class="user-reviews-rating">
           <span>10 Star Rating System (displayed as movie icons)</span>
