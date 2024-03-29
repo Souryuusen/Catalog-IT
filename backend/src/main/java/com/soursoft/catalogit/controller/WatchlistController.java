@@ -52,7 +52,6 @@ public class WatchlistController {
     public ResponseEntity<WatchlistElementDTO> getWatchlistElementByUserIdAndMovieId(@PathVariable Long userId,
                                                                                      @PathVariable Long movieId) {
         WatchlistElement foundElement = this.watchlistService.getWatchlistElementByUserIdAndMovieId(userId, movieId);
-
         return new ResponseEntity<>(WatchlistElementDTO.from(foundElement), HttpStatus.OK);
     }
 
@@ -61,8 +60,7 @@ public class WatchlistController {
                                                                                         @PathVariable Long movieId) {
         User user = this.userService.findUserById(userId);
         WatchlistElement foundElement = this.watchlistService.getWatchlistElementByUserIdAndMovieId(userId, movieId);
-        this.userService.removeWatchlistElementFromUser(user, foundElement);
-
+        foundElement = this.watchlistService.removeWatchlistElementFromUser(user, foundElement);
         return new ResponseEntity(WatchlistElementDTO.from(foundElement), HttpStatus.OK);
     }
 
@@ -76,6 +74,7 @@ public class WatchlistController {
                                                                            @RequestBody ReviewPostRequest request) {
         WatchlistElement foundElement = this.watchlistService.getWatchlistElementByUserIdAndMovieId(userId, movieId);
         Review newReview = new Review(request.rating(), request.reviewBody());
+        newReview.setOwner(foundElement);
         WatchlistElementDTO updatedElement = this.watchlistService.addReviewToWatchlistElement(foundElement, newReview);
 
         return new ResponseEntity<>(updatedElement, HttpStatus.CREATED);

@@ -68,9 +68,17 @@ public class WatchlistService {
         }
     }
 
-    @Transactional
+//    @Transactional
     public WatchlistElement createNewWatchlistElementForUser(User user, Movie movie){
         return this.save(WatchlistElement.from(user, movie));
+    }
+
+//    @Transactional
+    public WatchlistElement removeWatchlistElementFromUser(User user, WatchlistElement element) {
+        user = this.userService.removeWatchlistElementFromUser(user, element);
+        this.repository.delete(element);
+        System.out.println(element);
+        return element;
     }
 
     public Set<WatchlistElementDTO> getUserWatchlistDTO(User user) {
@@ -89,7 +97,10 @@ public class WatchlistService {
     @Transactional
     public WatchlistElementDTO addReviewToWatchlistElement(WatchlistElement element, Review review) {
         Review persistedReview = this.reviewService.save(review);
-        element.addReview(review);
+        element.addReview(persistedReview);
+        if(element.getRating() == 0 && persistedReview.getRating() > 0) {
+            element.setRating(persistedReview.getRating());
+        }
         WatchlistElement updatedElement = this.repository.save(element);
         return WatchlistElementDTO.from(updatedElement);
     }

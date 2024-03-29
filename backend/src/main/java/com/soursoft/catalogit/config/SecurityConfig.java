@@ -44,8 +44,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> {
                   authorize
                           .requestMatchers(new AntPathRequestMatcher("/api/auth/register")).hasRole("ADMIN")
-                          .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
+                          .requestMatchers(HttpMethod.DELETE).permitAll()
                           .requestMatchers(new AntPathRequestMatcher("/api/auth/login")).permitAll()
+                          .requestMatchers(HttpMethod.DELETE, "/api/user/**").permitAll()
+                          .requestMatchers(HttpMethod.DELETE, "/api/watchlist/**").permitAll()
+                          .requestMatchers(new AntPathRequestMatcher("/error")).authenticated()
                           .requestMatchers(new AntPathRequestMatcher("/api/movie/**")).authenticated()
                           .requestMatchers(new AntPathRequestMatcher("/api/user/**")).authenticated()
                           .requestMatchers(new AntPathRequestMatcher("/api/watchlist/**")).authenticated();

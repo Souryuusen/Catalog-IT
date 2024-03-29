@@ -75,6 +75,7 @@ public class UserController {
         if(existingElement.isPresent()) {
             WatchlistElement element = existingElement.get();
             user = this.userService.removeWatchlistElementFromUser(user, element);
+            element = this.watchlistService.removeWatchlistElementFromUser(user, element);
             return new ResponseEntity(WatchlistElementDTO.from(element), HttpStatus.OK);
         } else {
             throw new WatchlistElementNotFoundException(user, movie);
@@ -105,7 +106,7 @@ public class UserController {
 
         if(existingElement.isPresent()) {
             WatchlistElement element = existingElement.get();
-            user = this.userService.removeWatchlistElementFromUser(user, element);
+            element = this.watchlistService.removeWatchlistElementFromUser(user, element);
             return new ResponseEntity(WatchlistElementDTO.from(element), HttpStatus.OK);
         } else {
             throw new WatchlistElementNotFoundException(user, movie);

@@ -1,5 +1,6 @@
 package com.soursoft.catalogit.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.soursoft.catalogit.dto.ReviewDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -10,13 +11,21 @@ import java.util.Comparator;
 import java.util.Objects;
 
 @Entity
-@Table(name = "reviews")
+@Table(name = "reviews", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"rev_rating", "rev_body"})
+})
 public class Review implements Comparable<Review> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rev_id")
     private Long reviewId;
+
+
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "rev_owner", referencedColumnName = "wid")
+    private WatchlistElement owner;
 
     @Column(name = "rev_rating", nullable = false)
     @Range(min = 0, max = 100, message = "Review rating should have value from range 0 - 100")
@@ -35,8 +44,9 @@ public class Review implements Comparable<Review> {
         this.reviewBody = reviewBody;
     }
 
-    public Review(Long reviewId, Integer rating, String reviewBody) {
+    public Review(Long reviewId, WatchlistElement owner, Integer rating, String reviewBody) {
         this.reviewId = reviewId;
+        this.owner = owner;
         this.rating = rating;
         this.reviewBody = reviewBody;
     }
@@ -67,6 +77,18 @@ public class Review implements Comparable<Review> {
 
     public void setReviewBody(String reviewBody) {
         this.reviewBody = reviewBody;
+    }
+
+    public WatchlistElement getOwner() {
+        return owner;
+    }
+
+    public void setOwner(WatchlistElement owner) {
+        this.owner = owner;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 
     @Override
