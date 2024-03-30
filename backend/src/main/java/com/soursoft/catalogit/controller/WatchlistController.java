@@ -12,6 +12,8 @@ import com.soursoft.catalogit.service.ReviewService;
 import com.soursoft.catalogit.service.UserService;
 import com.soursoft.catalogit.service.WatchlistService;
 import com.soursoft.catalogit.valueobject.requests.ReviewPostRequest;
+import com.soursoft.catalogit.valueobject.response.MovieStatisticsResponse;
+import com.soursoft.catalogit.valueobject.response.WatchlistElementAverageRatingResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -86,6 +88,26 @@ public class WatchlistController {
         return new ResponseEntity<>(WatchlistElementDTO.from(foundElement), HttpStatus.OK);
     }
 
+    @PostMapping(
+            value = "/watchlists/elements/{elementId}/finished",
+            consumes = "application/json",
+            produces = "application/json"
+    )
+    public ResponseEntity<WatchlistElementDTO> setWatchlistElementAsFinished(@PathVariable Long elementId) {
+        WatchlistElement foundElement = this.watchlistService.setElementFinishedStatus(elementId, true);
+        return new ResponseEntity<>(WatchlistElementDTO.from(foundElement), HttpStatus.OK);
+    }
+
+    @PostMapping(
+            value = "/watchlists/elements/{elementId}/unfinished",
+            consumes = "application/json",
+            produces = "application/json"
+    )
+    public ResponseEntity<WatchlistElementDTO> setWatchlistElementAsNotFinished(@PathVariable Long elementId) {
+        WatchlistElement foundElement = this.watchlistService.setElementFinishedStatus(elementId, false);
+        return new ResponseEntity<>(WatchlistElementDTO.from(foundElement), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/watchlists/elements/{elementId}/reviews")
     public ResponseEntity<Set<ReviewDTO>> getWatchlistElementReviews(@PathVariable Long elementId) {
         WatchlistElement foundElement = this.watchlistService.getWatchlistElementById(elementId);
@@ -95,8 +117,26 @@ public class WatchlistController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/watchlists/elements/{elementId}/average-rating")
+    public ResponseEntity<WatchlistElementAverageRatingResponse> getWatchlistElementAverageRating(@PathVariable Long elementId) {
+        Integer rating = this.watchlistService.getElementReviewedEntityAverageRating(elementId);
+        return new ResponseEntity<>(new WatchlistElementAverageRatingResponse(elementId, rating), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/watchlists/elements/{elementId}/statistics")
+    public ResponseEntity<MovieStatisticsResponse> getWatchlistMovieStatistics(@PathVariable Long elementId) {
+        Integer rating = this.watchlistService.getElementReviewedEntityAverageRating(elementId);
+        Long reviewedEntityId = this.watchlistService.getElementReviewedEntityId(elementId);
+        Long usersToWatchCount = this.watchlistService.getElementReviewedEntityMarkedUsersCount(elementId, false);
+        Long usersFinishedCount = this.watchlistService.getElementReviewedEntityMarkedUsersCount(elementId, true);
+        Long reviewsCount = this.watchlistService.getElementReviewedEntityReviewsCount(elementId);
+        MovieStatisticsResponse msr = new MovieStatisticsResponse(reviewedEntityId, rating, usersToWatchCount,
+                                                                    usersFinishedCount, reviewsCount);
+        return new ResponseEntity<>(msr, HttpStatus.OK);
+    }
+
     @PostMapping(
-            value = "/watchlist/elements/{elementId}/reviews",
+            value = "/watchlists/elements/{elementId}/reviews",
             consumes = "application/json",
             produces = "application/json")
     public ResponseEntity<WatchlistElementDTO> postReviewToElementById(@PathVariable Long elementId,

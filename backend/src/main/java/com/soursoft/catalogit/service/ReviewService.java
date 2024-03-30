@@ -38,4 +38,10 @@ public class ReviewService {
         }
     }
 
+    @Transactional
+    public Review removeReview(Review review) {
+        this.repository.delete(review);
+        return review;
+    }
+
 }
