@@ -43,6 +43,18 @@ export class WatchlistService {
     }));
   }
 
+  public setWatchlistElementAsFinished(element: WatchlistElement) {
+    return this.restService.setWatchlistElementAsFinished(element).subscribe((updatedElement) => {
+      this.watchlistElementSubject.next(updatedElement);
+    })
+  }
+
+  public setWatchlistElementAsNotFinished(element: WatchlistElement) {
+    return this.restService.setWatchlistElementAsNotFinished(element).subscribe((updatedElement) => {
+      this.watchlistElementSubject.next(updatedElement);
+    })
+  }
+
   public setWatchlistElement(value: WatchlistElement | undefined) {
     this.watchlistElementSubject.next(value);
   }

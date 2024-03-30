@@ -1,0 +1,7 @@
+<div>
+  <span>Average rating: {{((this.movieStatistics$ | async)!.averageRating/10).toPrecision(2)}}</span>
+  <span>Wants to watch: {{((this.movieStatistics$ | async)!.usersToWatchCount)}}</span>
+  <span>Watched: {{((this.movieStatistics$ | async)!.usersFinishedCount)}}</span>
+  <span>Reviewed: {{((this.movieStatistics$ | async)!.reviewsCount)}}</span>
+</div>
+

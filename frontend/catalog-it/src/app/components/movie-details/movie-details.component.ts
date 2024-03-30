@@ -18,11 +18,13 @@ import { UserDTO } from '../../entities/user';
 import { AuthService } from '../../auth/Services/auth.service';
 import { WatchlistService } from '../../service/watchlist.service';
 import { RestService } from '../../service/rest.service';
+import { MovieStatisticsComponent } from '../movie-statistics/movie-statistics.component';
+import { MovieStatistics } from '../../entities/MovieStatistics';
 
 @Component({
   selector: 'app-movie-details',
   standalone: true,
-  imports: [CommonModule, RouterModule, MovieDetailsRowComponent, UserActionsComponent],
+  imports: [CommonModule, RouterModule, MovieDetailsRowComponent, UserActionsComponent, MovieStatisticsComponent],
   providers: [
     MovieService, GenreService, WriterService, DirectorService,
     ActorService, AuthService, WatchlistService, RestService
@@ -40,6 +42,7 @@ export class MovieDetailsComponent implements OnInit {
   protected movie: Movie | undefined = undefined;
   protected user: UserDTO = {username: "" , email: "", userId: 0};
   protected watchlistElement: WatchlistElement | undefined = undefined;
+  protected movieStatistics: MovieStatistics | undefined = undefined;
 
   protected loaded: boolean = false;
   protected userIsLogged: boolean = false;
@@ -61,20 +64,17 @@ export class MovieDetailsComponent implements OnInit {
     const state = this.router.getCurrentNavigation()?.extras.state;
     if(state) {
       this.movie = state['movie'];
-      this.watchlistElement = state['watchlistElement']
+      this.watchlistElement = state['watchlistElement'];
+      this.movieStatistics = state['statistics'];
     }
   }
 
   ngOnInit(): void {
     this.fetchData();
-    // this.fetchMovieById(this.movieId);
-    // this.fetchWatchlistElement(this.user, this.movie);
     this.verifyUser();
   }
 
   private fetchData() {
-    // this.movieService.fetchMovieById(this.movieId)?.subscribe(movie => {
-    //   this.movie = movie;
     if(this.watchlistElement) {
       this.watchlistService.setWatchlistElement(this.watchlistElement);
     }
@@ -96,41 +96,6 @@ export class MovieDetailsComponent implements OnInit {
 
       this.currentCover = this.movie.covers[this.currentCoverIndex];
     }
-
-    //   this.watchlistService.getWatchlistElementByMovieAndUser(this.user, this.movie).subscribe((value) => {
-    //     // this.watchlistElement = value;
-    //     // console.log(this.watchlistElement)
-    //     // this.watchlistService.setWatchlistElement(this.watchlistElement);
-    //     this.loaded = true;
-    //   })
-    // });
-  }
-
-  private fetchMovieById(id: string) {
-    this.movieService.fetchMovieById(id)?.subscribe(movie => {
-      this.movie = movie;
-
-      this.genreString = this.genreService.joinGenresNames(this.movie.genres);
-      this.directorString = this.directorService.joinDirectorsNames(this.movie.directors);
-      this.writerString = this.writerService.joinWritersNames(this.movie.writers);
-      this.actorString = this.actorService.joinActorsNames(this.movie.stars);
-      this.tagString = this.tagService.joinTagsNames(this.movie.keywords);
-
-      if(this.movie.originalTitle !== "") {
-        this.movieData.push(new MovieData("Also known as:", this.movie.originalTitle));
-      }
-      this.movieData.push(new MovieData(`Genre${this.movie.genres.length > 1 ? "s:" : ":"}`, this.genreString));
-      this.movieData.push(new MovieData(`Director${this.movie.directors.length > 1 ? "s:" : ":"}`, this.directorString));
-      this.movieData.push(new MovieData(`Writer${this.movie.writers.length > 1 ? "s:" : ":"}`, this.writerString));
-      this.movieData.push(new MovieData(`Actor${this.movie.stars.length > 1 ? "s:" : ":"}`, this.actorString));
-      this.movieData.push(new MovieData(`Keyword${this.movie.keywords.length > 1 ? "s:" : ":"}`, this.tagString));
-
-      this.currentCover = this.movie.covers[this.currentCoverIndex];
-    });
-  }
-
-  private fetchWatchlistElement(user: UserDTO, movie: Movie) {
-
   }
 
   /**

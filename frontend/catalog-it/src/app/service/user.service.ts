@@ -10,20 +10,6 @@ import { Movie, MovieShort } from '../entities/movie';
 
 export class UserService {
 
-
-  public isMovieAddedToWatchlist :Subject<boolean> = new Subject<boolean>();
-
   constructor(private restService: RestService) { }
-
-  public isMovieAddedToUserWatchlist(user: UserDTO, movie: Movie) {
-    this.restService.getMovieFromUserWatchlist(user, movie).subscribe((movieData) => {
-      if(movieData !== null) {
-        this.isMovieAddedToWatchlist.next(true);
-      } else {
-        this.isMovieAddedToWatchlist.next(false);
-      }
-    })
-  }
-
 
 }

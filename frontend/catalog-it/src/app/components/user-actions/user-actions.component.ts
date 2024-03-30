@@ -30,15 +30,19 @@ export class UserActionsComponent implements OnInit, OnDestroy{
 
   constructor(protected restService: RestService, protected userService: UserService,
               protected watchlistService: WatchlistService) {
-                this.isLoaded = true;
-      this.currentWatchlistElement$ = this.watchlistService.watchlistElement$.pipe(
-        tap(value => console.log('Current Watchlist Element:', value))
-      );;
-      console.log(this.watchlistElement)
+    this.isLoaded = true;
+    this.currentWatchlistElement$ = this.watchlistService.watchlistElement$
+      // this.currentWatchlistElement$ = this.watchlistService.watchlistElement$.pipe(
+      //   tap(value => console.log('Current Watchlist Element:', value))
+      // );
+      // console.log(this.watchlistElement)
   }
 
   ngOnInit(): void {
     this.watchlistService.setWatchlistElement(this.watchlistElement);
+    this.currentWatchlistElement$.subscribe((element) => {
+      this.watchlistElement = element;
+    });
   }
 
   ngOnDestroy(): void {
@@ -51,6 +55,22 @@ export class UserActionsComponent implements OnInit, OnDestroy{
 
   protected removeFromWatchlist(): void {
     this.watchlistService.removeMovieFromWatchlist(this.user, this.movie)
+  }
+
+  protected setAsFinished(): void {
+    if(this.watchlistElement) {
+      this.watchlistService.setWatchlistElementAsFinished(this.watchlistElement);
+    }
+  }
+
+  protected setAsNotFinished(): void {
+    if(this.watchlistElement) {
+      this.watchlistService.setWatchlistElementAsNotFinished(this.watchlistElement);
+    }
+  }
+
+  protected addNewReview(): void {
+
   }
 
 }

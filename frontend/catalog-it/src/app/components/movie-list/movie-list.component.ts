@@ -30,7 +30,7 @@ export class MovieListComponent implements OnInit{
   }
 
   private obtainAllMoviesShort() {
-    this.movieService.fetchAllMoviesShort()?.subscribe(movies => {
+    this.movieService.getAllMoviesShortData().subscribe((movies) => {
       this.movieList = movies;
       this.loaded = true;
     });

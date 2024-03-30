@@ -1,3 +1,4 @@
+import { Subject } from 'rxjs';
 import { WatchlistService } from './../../service/watchlist.service';
 import { routes } from './../../app.routes';
 import { MovieShort } from './../../entities/movie';
@@ -34,12 +35,23 @@ export class MovieTileComponent{
   }
 
   protected navigateToMovieDetails(ms: MovieShort) {
-    this.movieService.fetchMovieById(ms.movieId.toString())?.subscribe((movie) => {
+    this.movieService.getMovieById(ms.movieId.toString())?.subscribe((movie) => {
       this.watchlistService.getWatchlistElementByMovieAndUser(this.user, movie).subscribe((element) => {
-        this.router.navigate(["movie/", ms.movieId], {state: {
-          movie: movie,
-          watchlistElement: element
-        }});
+        if(element) {
+          this.movieService.getMovieFromWatchlistElementStatistics(element).subscribe((statistics) => {
+            this.router.navigate(["movie/", ms.movieId], {state: {
+              movie: movie,
+              watchlistElement: element,
+              statistics: statistics
+            }});
+          });
+        } else {
+          this.router.navigate(["movie/", ms.movieId], {state: {
+            movie: movie,
+            watchlistElement: element,
+            statistics: undefined
+          }});
+        }
       });
     });
   }

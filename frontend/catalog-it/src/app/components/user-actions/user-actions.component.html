@@ -1,19 +1,15 @@
 <div class="user-actions-container">
   <div class="user-actions-button-container">
-    <!-- @if (this.isLoaded) { -->
       @if ((this.currentWatchlistElement$| async) === undefined) {
         <button (click)="addToWatchlist()"><strong>👁 </strong>Add to watchlist</button>
       } @else {
         <button (click)="removeFromWatchlist()"><strong>👁 </strong>Remove from watchlist</button>
-        <button >Mark as already seen</button>
-        <button >Add new review</button>
+        @if (!(this.currentWatchlistElement$| async)?.finished)  {
+          <button (click)="setAsFinished()">Mark as already seen</button>
+        } @else {
+          <button (click)="setAsNotFinished()">Mark as not seen</button>
+          <button (click)="addNewReview()">Add new review</button>
+        }
       }
-    <!-- } -->
-  </div>
-  <div>
-    <span>Average rating: #.#</span>
-    <span>Wants to watch: #</span>
-    <span>Watched: #</span>
-    <span>Reviewed: #</span>
   </div>
 </div>
